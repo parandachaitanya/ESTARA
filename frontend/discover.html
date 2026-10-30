@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTARA | Intelligent Property Discovery</title>
+    <link rel="stylesheet" href="/static/assets/css/styles.css">
+
+    <style>
+        .search-controls {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .search-controls input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .voice-button {
+            border: 1px solid #777;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .voice-button.listening {
+            background: #d9534f;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="container">
+    <nav class="navbar">
+        <a class="logo" href="/">ESTARA</a>
+
+        <div class="nav-links">
+            <a href="#discover">Discover</a>
+            <a href="/search">Search</a>
+            <a href="/price-prediction">Price Prediction</a>
+            <a href="/future-insights">Future Insights</a>
+            <a href="/compare">Compare</a>
+            <a href="/vision-ai">Vision AI</a>
+            <a href="/condition-ai">Condition AI</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <img class="hero-image"
+             src="/static/assets/images/hero.png"
+             alt="Featured ESTARA property">
+
+        <div class="hero-content">
+
+            <p class="eyebrow">Intelligent Real Estate Discovery</p>
+
+            <h1>Find a place<br>that feels <span>like you.</span></h1>
+
+            <p>
+                Explore homes with smarter search and personalized
+                property recommendations.
+            </p>
+
+            <div class="actions">
+                <a class="button" href="/search">
+                    Discover Properties →
+                </a>
+
+                <a class="button secondary" href="#smart-search">
+                    Try Smart Search
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Smart and Voice Search -->
+    <section class="section" id="smart-search">
+
+        <div class="section-heading">
+            <p class="eyebrow">AI-Powered Property Search</p>
+
+            <h2>Describe your dream property.</h2>
+
+            <p>
+                Type your requirements or use your voice to search
+                for matching properties.
+            </p>
+        </div>
+
+        <div class="panel">
+
+            <form id="nlpForm">
+
+                <label for="naturalQuery">Your property search</label>
+
+                <div class="search-controls">
+
+                    <input
+                        id="naturalQuery"
+                        name="query"
+                        type="text"
+                        required
+                        placeholder="3 BHK apartment in Gachibowli under 90 lakh"
+                    >
+
+                    <button
+                        type="button"
+                        class="voice-button"
+                        id="voiceButton"
+                    >
+                        🎤 Voice Search
+                    </button>
+
+                    <button class="button" type="submit">
+                        Find Matches →
+                    </button>
+
+                </div>
+
+            </form>
+
+            <p id="nlpMessage" class="message" role="status"></p>
+
+        </div>
+    </section>
+
+
+    <!-- Discover Categories -->
+    <section class="section" id="discover">
+
+        <div class="section-heading">
+            <p class="eyebrow">Explore Your Options</p>
+            <h2>What are you looking for?</h2>
+        </div>
+
+        <div class="grid">
+
+            <a class="card" href="/search?mode=buy">
+                <span class="tag">BUY</span>
+                <h3>Buy a Property</h3>
+                <p>Explore homes that fit your budget and location.</p>
+                <span class="card-link">Explore homes →</span>
+            </a>
+
+            <a class="card" href="/search?mode=rent">
+                <span class="tag">RENT</span>
+                <h3>Rent a Property</h3>
+                <p>Discover living spaces for your lifestyle.</p>
+                <span class="card-link">Find rentals →</span>
+            </a>
+
+            <a class="card" href="/search?mode=lease">
+                <span class="tag">LEASE</span>
+                <h3>Lease a Property</h3>
+                <p>Explore residential and commercial spaces.</p>
+                <span class="card-link">Explore leases →</span>
+            </a>
+
+            <a class="card" href="/search?mode=sell">
+                <span class="tag">SELL</span>
+                <h3>Sell a Property</h3>
+                <p>Start the process of listing a property.</p>
+                <span class="card-link">Get started →</span>
+            </a>
+
+        </div>
+    </section>
+
+
+    <!-- ESTARA Tools -->
+    <section class="section" id="estara-tools">
+
+        <div class="section-heading">
+            <p class="eyebrow">Explore ESTARA Tools</p>
+
+            <h2>Make informed property decisions.</h2>
+
+            <p>
+                Explore AI-powered property discovery, visual search,
+                price estimates and property analysis.
+            </p>
+        </div>
+
+        <div class="grid">
+
+            <a class="card" href="/price-prediction">
+                <span class="tag">PRICE ESTIMATION</span>
+                <h3>AI Property Price Prediction</h3>
+                <p>
+                    Enter property details to obtain an experimental
+                    listing-price estimate.
+                </p>
+                <span class="card-link">Predict a price →</span>
+            </a>
+
+            <a class="card" href="/future-insights">
+                <span class="tag">PROPERTY INSIGHTS</span>
+                <h3>Future Insights</h3>
+                <p>
+                    Calculate potential profit or loss, return on
+                    investment and break-even price.
+                </p>
+                <span class="card-link">Explore insights →</span>
+            </a>
+
+            <a class="card" href="/compare">
+                <span class="tag">COMPARISON</span>
+                <h3>Compare Properties</h3>
+                <p>
+                    Compare available property options to support
+                    your decision-making.
+                </p>
+                <span class="card-link">Compare listings →</span>
+            </a>
+
+            <a class="card" href="/vision-ai">
+                <span class="tag">VISUAL PROPERTY SEARCH</span>
+                <h3>Vision AI Property Search</h3>
+                <p>
+                    Upload a property image and discover visually
+                    similar properties from available listings.
+                </p>
+                <span class="card-link">Search using an image →</span>
+            </a>
+
+            <a class="card" href="/condition-ai">
+                <span class="tag">AI PROPERTY INSPECTION</span>
+                <h3>Property Condition AI</h3>
+                <p>
+                    Upload property photos to check for possible
+                    visible cracks, dampness, peeling paint and
+                    surface deterioration.
+                </p>
+                <span class="card-link">Analyze property →</span>
+            </a>
+
+        </div>
+
+        <p class="message">
+            Price estimates are experimental and are not guaranteed
+            market prices. AI condition assessments are preliminary
+            and should be verified by a qualified inspector.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        ESTARA · Discover spaces. Find your place.
+    </div>
+</footer>
+
+
+<script>
+
+// EXISTING SMART SEARCH
+document.getElementById("nlpForm").addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+        const query = document
+            .getElementById("naturalQuery")
+            .value.trim();
+
+        const message = document.getElementById("nlpMessage");
+
+        if (!query) {
+            message.textContent = "Please enter a property search.";
+            return;
+        }
+
+        message.textContent = "Understanding your search...";
+
+        try {
+
+            const response = await fetch("/api/parse-query", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ query: query })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || data.message || "Search failed."
+                );
+            }
+
+            const filters = data.filters || {};
+            const params = new URLSearchParams();
+
+            if (filters.location) {
+                params.set("location", filters.location);
+            }
+
+            if (filters.bhk !== null &&
+                filters.bhk !== undefined &&
+                filters.bhk !== "") {
+                params.set("bhk", filters.bhk);
+            }
+
+            if (filters.propertyType) {
+                params.set("propertyType", filters.propertyType);
+            }
+
+            if (filters.minBudget !== null &&
+                filters.minBudget !== undefined &&
+                filters.minBudget !== "") {
+                params.set("minBudget", filters.minBudget);
+            }
+
+            if (filters.maxBudget !== null &&
+                filters.maxBudget !== undefined &&
+                filters.maxBudget !== "") {
+                params.set("maxBudget", filters.maxBudget);
+            }
+
+            params.set("query", query);
+
+            window.location.href = "/results?" + params.toString();
+
+        } catch (error) {
+
+            console.error("ESTARA Smart Search error:", error);
+
+            message.textContent =
+                "Could not process your search. Check Flask and try again.";
+
+        }
+    }
+);
+
+
+// VOICE SEARCH
+const voiceButton = document.getElementById("voiceButton");
+const searchInput = document.getElementById("naturalQuery");
+const searchMessage = document.getElementById("nlpMessage");
+
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    voiceButton.addEventListener("click", function () {
+
+        try {
+            recognition.start();
+        } catch (error) {
+            searchMessage.textContent =
+                "Voice search is already starting. Please wait.";
+        }
+
+    });
+
+    recognition.onstart = function () {
+        voiceButton.classList.add("listening");
+        voiceButton.textContent = "🔴 Listening...";
+        searchMessage.textContent = "Speak your property requirements.";
+    };
+
+    recognition.onresult = function (event) {
+
+        const spokenText =
+            event.results[0][0].transcript;
+
+        searchInput.value = spokenText;
+
+        searchMessage.textContent =
+            "Voice captured! Click Find Matches to search.";
+
+    };
+
+    recognition.onerror = function (event) {
+
+        searchMessage.textContent =
+            "Voice search error: " + event.error +
+            ". Check your microphone permission.";
+
+    };
+
+    recognition.onend = function () {
+        voiceButton.classList.remove("listening");
+        voiceButton.textContent = "🎤 Voice Search";
+    };
+
+} else {
+
+    voiceButton.disabled = true;
+    voiceButton.textContent = "Voice Search unavailable";
+
+    searchMessage.textContent =
+        "Voice search is not supported in this browser. Try Microsoft Edge or Google Chrome.";
+
+}
+
+</script>
+
+</body>
+</html>

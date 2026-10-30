@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#172554">
+<title>Property Recommendations | ESTARA</title>
+<style>
+:root{--navy:#172554;--blue:#4058c8;--bg:#f5f7fc;--text:#172033;--muted:#64748b;--line:#e2e8f0;--green:#087f5b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+a{color:inherit}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.navbar{max-width:1250px;margin:auto;padding:17px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.logo{font-size:25px;letter-spacing:3px;font-weight:900;color:var(--navy);text-decoration:none}
+nav{display:flex;gap:20px;flex-wrap:wrap}
+nav a{font-size:14px;font-weight:650;color:#475569;text-decoration:none}
+nav a:hover,nav a:focus{color:var(--blue)}
+.hero{padding:54px 24px;background:linear-gradient(120deg,#e9edff,#f5f7fc 70%,#e4f5f1)}
+.hero-inner{max-width:1200px;margin:auto}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase}
+.hero h1{max-width:760px;font-size:clamp(30px,5vw,48px);line-height:1.12;letter-spacing:-1.2px;color:var(--navy);margin:12px 0}
+.hero p{max-width:700px;color:#526079;line-height:1.8;margin:0}
+.container{max-width:1250px;margin:auto;padding:32px 24px 55px;min-height:55vh}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.toolbar h2{font-size:23px;color:var(--navy);margin:0}
+.toolbar-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+button,select{font:inherit}
+select{background:white;border:1px solid #d7deea;border-radius:9px;padding:11px;color:var(--text)}
+.btn{border:0;border-radius:9px;padding:11px 15px;font-weight:750;cursor:pointer}
+.btn:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #a5b4fc;outline-offset:3px}
+.btn-primary{background:var(--navy);color:white}
+.btn-primary:hover{background:#293d78}
+.btn-soft{background:#edf0ff;color:var(--navy)}
+.btn-soft:hover{background:#dce3ff}
+.status{color:var(--muted);line-height:1.6;margin:15px 0}
+.compare-banner{display:none;margin:0 0 20px;padding:18px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:13px;color:#1e3a8a;line-height:1.7}
+.compare-banner a{display:inline-block;margin:8px 8px 0 0;padding:9px 13px;background:#1e40af;color:white;text-decoration:none;border-radius:8px;font-weight:700}
+.compare-banner button{margin-top:8px}
+.property-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:23px;align-items:stretch}
+.property-card{background:#fff;border:1px solid #e6eaf1;border-radius:17px;overflow:hidden;box-shadow:0 5px 20px rgba(23,37,84,.055);transition:transform .2s,box-shadow .2s;min-width:0}
+.property-card:hover{transform:translateY(-4px);box-shadow:0 13px 30px rgba(23,37,84,.11)}
+.image-wrap{position:relative;background:#e8edf5}
+.property-card img{display:block;width:100%;height:215px;object-fit:cover}
+.image-label{position:absolute;top:13px;left:13px;background:#fff;box-shadow:0 2px 9px #00000012;padding:7px 10px;border-radius:8px;color:var(--navy);font-size:11px;font-weight:850;letter-spacing:.5px}
+.card-content{padding:20px}
+.property-card h3{color:var(--navy);font-size:20px;line-height:1.4;margin:0 0 9px}
+.location{font-size:14px;color:var(--muted);line-height:1.5;margin:0 0 14px}
+.price{font-size:25px;color:var(--green);font-weight:850;letter-spacing:-.5px;margin:0 0 15px}
+.details{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px}
+.details span{font-size:12px;font-weight:700;background:#f0f3ff;color:#33458d;padding:7px 9px;border-radius:7px}
+.description{font-size:14px;color:#596579;line-height:1.7;margin:0 0 15px}
+.match-box{padding:13px;background:#f0fdf7;border:1px solid #ccefe0;border-radius:11px;margin:14px 0}
+.match-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#126846;font-size:13px;font-weight:800}
+.match-number{font-size:22px}
+.match-track{height:7px;background:#d9eee5;border-radius:10px;overflow:hidden;margin-top:10px}
+.match-fill{height:100%;background:#15966b;border-radius:10px}
+.reasons{font-size:13px;line-height:1.7;color:#475569;margin:13px 0}
+.reasons strong{color:var(--navy)}
+.reason-list{padding-left:19px;margin:6px 0 0}
+.reason-list li{margin:3px 0}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.card-actions button{flex:1 1 85px;min-height:42px;font-size:13px}
+.details-btn{background:var(--navy);color:#fff}
+.details-btn:hover{background:#293d78}
+.save-btn{background:#edf0ff;color:var(--navy)}
+.compare-btn{background:#e0f2fe;color:#075985}
+.empty-state,.error-state{background:#fff;padding:35px 22px;border:1px solid var(--line);border-radius:15px;text-align:center;line-height:1.8;grid-column:1/-1}
+.empty-state h3,.error-state h3{color:var(--navy);margin:0 0 9px}
+.error-state{color:#9b1c1c}
+.primary-link{display:inline-block;margin-top:12px;padding:11px 17px;background:var(--navy);color:white;border:0;border-radius:8px;text-decoration:none;cursor:pointer;font-weight:750}
+footer{background:var(--navy);color:#dbe4ff;text-align:center;padding:25px 20px;line-height:1.7;font-size:13px}
+@media(max-width:600px){.navbar{padding:15px 5%}nav{gap:13px}.hero{padding:37px 5%}.container{padding:25px 5%}.property-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start}.property-card img{height:205px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<div class="navbar">
+<a class="logo" href="/">ESTARA</a>
+<nav aria-label="Main navigation">
+<a href="/">Home</a><a href="/search">Search</a><a href="/results">Properties</a><a href="/compare">Compare</a><a href="/inbox">Inbox</a>
+</nav>
+</div>
+</header>
+
+<section class="hero">
+<div class="hero-inner">
+<div class="eyebrow">ESTARA · SMART PROPERTY DISCOVERY</div>
+<h1>Find a home that feels right.</h1>
+<p>Explore properties matched to your search preferences. Compare prices, understand why a listing matches, and save your favourites for later.</p>
+</div>
+</section>
+
+<main class="container">
+<div class="toolbar">
+<h2 id="resultsHeading">Available Properties</h2>
+<div class="toolbar-controls">
+<label for="sortOrder">Sort:</label>
+<select id="sortOrder">
+<option value="recommended">Best match</option>
+<option value="priceLow">Price: Low to High</option>
+<option value="priceHigh">Price: High to Low</option>
+<option value="scoreHigh">Match percentage</option>
+</select>
+<button class="btn btn-soft" id="savedToggle" type="button">♡ Show Saved</button>
+</div>
+</div>
+
+<div id="compareBanner" class="compare-banner" role="status" aria-live="polite">
+<strong>Property comparison</strong>
+<p id="compareMessage">Select two different properties.</p>
+<a id="openCompareLink" href="/compare" hidden>Compare selected properties →</a>
+<button class="btn btn-soft" id="clearCompareButton" type="button">Clear selection</button>
+</div>
+
+<p id="status" class="status" role="status" aria-live="polite">Loading properties...</p>
+<section id="propertyGrid" class="property-grid" aria-label="Property listings"></section>
+</main>
+
+<footer>© 2026 ESTARA · Find a home that fits your needs.</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const propertyGrid = $("propertyGrid");
+const statusElement = $("status");
+const sortOrder = $("sortOrder");
+const savedToggle = $("savedToggle");
+const compareBanner = $("compareBanner");
+const compareMessage = $("compareMessage");
+const openCompareLink = $("openCompareLink");
+
+let allProperties = [];
+let showingSaved = false;
+const params = new URLSearchParams(location.search);
+
+const filters = {
+ query: params.get("query") || "",
+ location: params.get("location") || "",
+ propertyType: params.get("propertyType") || "",
+ bhk: params.get("bhk") || "",
+ minBudget: params.get("minBudget") || "",
+ maxBudget: params.get("maxBudget") || ""
+};
+
+function escapeHTML(value) {
+ return String(value ?? "").replace(/[&<>"']/g, c => ({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[c]);
+}
+function getPropertyId(p) { return String(p.id ?? p.propertyId ?? p._id ?? ""); }
+function getPropertyName(p) { return p.name ?? p.title ?? p.propertyName ?? "Property"; }
+function getPropertyLocation(p) { return p.location ?? p.area ?? "Location not specified"; }
+function getPropertyType(p) { return p.propertyType ?? p.type ?? "Property"; }
+function getPropertyBHK(p) { return p.bhk ?? p.bedrooms ?? p.bedroomCount ?? ""; }
+
+function getPropertyPrice(p) {
+ for (const candidate of [p.priceValue,p.price,p.budget]) {
+  if (typeof candidate === "number" && Number.isFinite(candidate) && candidate > 0) return candidate;
+  if (typeof candidate === "string") {
+   const match = candidate.toLowerCase().replace(/,/g,"").match(/[\d.]+\s*(?:crore|cr|lakh|lac)?/);
+   if (match) {
+    const n = Number(match[0].match(/[\d.]+/)[0]);
+    if (Number.isFinite(n) && n > 0) {
+     if (/crore|cr/i.test(match[0])) return n * 10000000;
+     if (/lakh|lac/i.test(match[0])) return n * 100000;
+     return n;
+    }
+   }
+  }
+ }
+ return null;
+}
+function formatPrice(p) {
+ if (p.priceFormatted || p.priceLabel) return escapeHTML(p.priceFormatted ?? p.priceLabel);
+ const price = getPropertyPrice(p);
+ if (price === null) return "Price on request";
+ if (price >= 10000000) return "₹" + (price/10000000).toLocaleString("en-IN",{maximumFractionDigits:2}) + " crore";
+ if (price >= 100000) return "₹" + (price/100000).toLocaleString("en-IN",{maximumFractionDigits:2}) + " lakh";
+ return "₹" + price.toLocaleString("en-IN");
+}
+function getImage(p) {
+ return p.imageUrl ?? p.image ?? (Array.isArray(p.images) ? p.images[0] : "") ??
+ "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=900&q=80";
+}
+function getFeatures(p) {
+ return Array.isArray(p.features) ? p.features : Array.isArray(p.amenities) ? p.amenities : [];
+}
+function getSavedProperties() {
+ try {
+  const value = JSON.parse(localStorage.getItem("estaraSavedProperties") || "[]");
+  return Array.isArray(value) ? value.map(String) : [];
+ } catch { return []; }
+}
+function isSaved(id) { return getSavedProperties().includes(String(id)); }
+
+function toggleSaved(encodedId) {
+ const id = decodeURIComponent(encodedId);
+ if (!id) return;
+ const saved = getSavedProperties();
+ const updated = saved.includes(id) ? saved.filter(x => x !== id) : [...saved,id];
+ try {
+  localStorage.setItem("estaraSavedProperties",JSON.stringify(updated));
+  renderProperties();
+ } catch (error) {
+  console.error(error);
+  alert("Your browser could not save this property.");
+ }
+}
+
+/* Transparent, local match score: no AI-generated score is claimed. */
+function getMatch(property) {
+ const reasons = [];
+ const misses = [];
+ let earned = 0, possible = 0;
+ const location = filters.location.trim().toLowerCase();
+ const type = filters.propertyType.trim().toLowerCase();
+ const wantedBhk = filters.bhk.trim();
+ const query = filters.query.trim().toLowerCase();
+ const actualLocation = String(getPropertyLocation(property)).toLowerCase();
+ const actualType = String(getPropertyType(property)).toLowerCase();
+ const actualBhk = String(getPropertyBHK(property));
+ const price = getPropertyPrice(property);
+
+ function assess(active, points, passed, yes, no) {
+  if (!active) return;
+  possible += points;
+  if (passed) { earned += points; reasons.push(yes); }
+  else misses.push(no);
+ }
+ assess(!!location,30,actualLocation.includes(location),"Matches your preferred location.","Location differs from your preference.");
+ assess(!!type,20,actualType.includes(type),"Matches your selected property type.","Property type differs from your preference.");
+ assess(!!wantedBhk,20,actualBhk === wantedBhk || actualBhk.includes(wantedBhk),`Matches your ${wantedBhk} BHK preference.`,"Bedroom count may not match your preference.");
+ const min = filters.minBudget.trim() ? Number(filters.minBudget) : null;
+ const max = filters.maxBudget.trim() ? Number(filters.maxBudget) : null;
+ const budgetActive = min !== null || max !== null;
+ const budgetPass = price !== null &&
+  (min === null || price >= min) && (max === null || price <= max);
+ assess(budgetActive,25,budgetPass,"Listed price falls within your budget.","Price is outside your budget or is not specified.");
+ assess(!!query,5,(String(getPropertyName(property))+" "+actualLocation+" "+actualType+" "+String(property.description ?? "")).toLowerCase().includes(query),"Matches words in your search.","Your search words were not found in this listing.");
+
+ if (possible === 0) {
+  return {score:null,reasons:["Explore this listing and use Search to personalise your matches."],misses:[]};
+ }
+ return {score:Math.round(earned/possible*100),reasons,misses};
+}
+
+function getCompareSelection() {
+ try {
+  const value = JSON.parse(sessionStorage.getItem("estaraCompareProperties") || "[]");
+  return Array.isArray(value) ? [...new Set(value.map(String).filter(Boolean))].slice(0,2) : [];
+ } catch { return []; }
+}
+function updateCompareBanner() {
+ const selected = getCompareSelection();
+ compareBanner.style.display = selected.length ? "block" : "none";
+ if (!selected.length) { openCompareLink.hidden = true; return; }
+ const names = selected.map(id => {
+  const p = allProperties.find(item => getPropertyId(item) === id);
+  return p ? getPropertyName(p) : id;
+ });
+ compareMessage.textContent = selected.length === 1
+  ? `Selected: ${names[0]}. Choose one more property to compare.`
+  : `Ready to compare: ${names[0]} and ${names[1]}.`;
+ openCompareLink.hidden = selected.length < 2;
+}
+function addToCompare(encodedId) {
+ const id = decodeURIComponent(encodedId);
+ if (!id || !allProperties.some(p => getPropertyId(p) === id)) {
+  alert("This property cannot be selected for comparison."); return;
+ }
+ let selected = getCompareSelection();
+ if (selected.includes(id)) { alert("This property is already selected."); return; }
+ if (selected.length >= 2) selected = [];
+ selected.push(id);
+ try { sessionStorage.setItem("estaraCompareProperties",JSON.stringify(selected)); }
+ catch { alert("Your browser could not save the comparison selection."); return; }
+ updateCompareBanner();
+ if (selected.length === 2) location.href = "/compare";
+ else {
+  compareBanner.scrollIntoView({behavior:"smooth",block:"center"});
+ }
+}
+function clearCompareSelection() {
+ sessionStorage.removeItem("estaraCompareProperties");
+ updateCompareBanner();
+}
+
+function applyFilters(properties) {
+ const location = filters.location.trim().toLowerCase();
+ const type = filters.propertyType.trim().toLowerCase();
+ const bhk = filters.bhk.trim();
+ const min = filters.minBudget.trim() ? Number(filters.minBudget) : null;
+ const max = filters.maxBudget.trim() ? Number(filters.maxBudget) : null;
+ const query = filters.query.trim().toLowerCase();
+
+ return properties.filter(p => {
+  const price = getPropertyPrice(p);
+  const locationOK = !location || String(getPropertyLocation(p)).toLowerCase().includes(location);
+  const typeOK = !type || String(getPropertyType(p)).toLowerCase().includes(type);
+  const actualBhk = String(getPropertyBHK(p));
+  const bhkOK = !bhk || actualBhk === bhk || actualBhk.includes(bhk);
+  const minOK = min === null || (price !== null && price >= min);
+  const maxOK = max === null || (price !== null && price <= max);
+  return locationOK && typeOK && bhkOK && minOK && maxOK;
+ });
+}
+function getVisibleProperties() {
+ let list = applyFilters(allProperties);
+ if (showingSaved) {
+  const saved = getSavedProperties();
+  list = list.filter(p => saved.includes(getPropertyId(p)));
+ }
+ const order = sortOrder.value;
+ if (order === "priceLow") list.sort((a,b)=>(getPropertyPrice(a) ?? Infinity)-(getPropertyPrice(b) ?? Infinity));
+ else if (order === "priceHigh") list.sort((a,b)=>(getPropertyPrice(b) ?? -Infinity)-(getPropertyPrice(a) ?? -Infinity));
+ else if (order === "scoreHigh") list.sort((a,b)=>(getMatch(b).score ?? -1)-(getMatch(a).score ?? -1));
+ else list.sort((a,b)=>(getMatch(b).score ?? -1)-(getMatch(a).score ?? -1));
+ return list;
+}
+
+function viewDetails(encodedId) {
+ const id = decodeURIComponent(encodedId);
+ const p = allProperties.find(item => getPropertyId(item) === id);
+ if (!p) { alert("Property details are unavailable. Please reload the page."); return; }
+ try { sessionStorage.setItem("estaraSelectedProperty",JSON.stringify(p)); } catch {}
+ const url = new URL("/property-details",location.origin);
+ if (id) url.searchParams.set("id",id);
+ location.href = url.toString();
+}
+function showAllProperties() {
+ showingSaved = false;
+ savedToggle.textContent = "♡ Show Saved";
+ renderProperties();
+}
+
+function renderProperties() {
+ const properties = getVisibleProperties();
+ $("resultsHeading").textContent = showingSaved ? "Your Saved Properties" : "Available Properties";
+
+ if (!properties.length) {
+  propertyGrid.innerHTML = `<div class="empty-state"><h3>No properties found</h3><p>${showingSaved ? "No saved properties match your filters." : "Try adjusting your filters or searching again."}</p>${showingSaved ? '<button class="primary-link" type="button" onclick="showAllProperties()">Show all properties</button>' : '<a class="primary-link" href="/search">Search again</a>'}</div>`;
+  statusElement.textContent = "No properties match your current selection.";
+  updateCompareBanner(); return;
+ }
+ statusElement.textContent = `Showing ${properties.length} ${properties.length===1?"property":"properties"}.`;
+ propertyGrid.innerHTML = properties.map(p => {
+  const id = getPropertyId(p), encoded = encodeURIComponent(id);
+  const name = getPropertyName(p), match = getMatch(p);
+  const details = [getPropertyType(p),getPropertyBHK(p) ? `${getPropertyBHK(p)} BHK` : "",...getFeatures(p).slice(0,2)].filter(Boolean);
+  const reasons = match.reasons.map(x=>`<li>${escapeHTML(x)}</li>`).join("");
+  const misses = match.misses.map(x=>`<li>${escapeHTML(x)}</li>`).join("");
+  const matchHTML = match.score === null
+   ? `<div class="match-box"><div class="match-top">Personalise your recommendations</div><p class="reasons">Use Search to set a location, budget, property type or BHK preference.</p></div>`
+   : `<div class="match-box"><div class="match-top"><span>Preference match</span><span class="match-number">${match.score}%</span></div><div class="match-track" role="progressbar" aria-label="Preference match" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${match.score}"><div class="match-fill" style="width:${match.score}%"></div></div></div>`;
+  return `<article class="property-card">
+   <div class="image-wrap"><img src="${escapeHTML(getImage(p))}" alt="${escapeHTML(name)}" loading="lazy" onerror="this.onerror=null;this.style.opacity='.35'"><span class="image-label">ESTARA PROPERTY</span></div>
+   <div class="card-content">
+    <h3>${escapeHTML(name)}</h3><p class="location">📍 ${escapeHTML(getPropertyLocation(p))}</p>
+    <p class="price">${formatPrice(p)}</p>
+    <div class="details">${details.map(x=>`<span>${escapeHTML(x)}</span>`).join("")}</div>
+    <p class="description">${escapeHTML(p.description ?? "Explore this property and contact the seller for more information.")}</p>
+    ${matchHTML}
+    <div class="reasons"><strong>${match.score===null?"Getting started":"Why this match?"}</strong><ul class="reason-list">${reasons}${misses}</ul></div>
+    <div class="card-actions">
+     <button class="btn details-btn" type="button" onclick="viewDetails('${encoded}')">View Details</button>
+     <button class="btn save-btn" type="button" onclick="toggleSaved('${encoded}')">${isSaved(id)?"♥ Saved":"♡ Save"}</button>
+     <button class="btn compare-btn" type="button" onclick="addToCompare('${encoded}')">⚖ Compare</button>
+    </div>
+   </div></article>`;
+ }).join("");
+ updateCompareBanner();
+}
+
+async function loadProperties() {
+ statusElement.textContent = "Loading property listings...";
+ propertyGrid.innerHTML = "";
+ const hasFilters = Object.values(filters).some(v=>String(v).trim()!=="");
+ const query = new URLSearchParams();
+ Object.entries(filters).forEach(([key,value])=>{if(String(value).trim())query.set(key,value);});
+
+ const endpoints = hasFilters
+  ? [`/api/recommendations?${query.toString()}`,"/api/properties"]
+  : ["/api/properties"];
+
+ let lastError;
+ for (const endpoint of endpoints) {
+  try {
+   const response = await fetch(endpoint,{headers:{"Accept":"application/json"}});
+   if (!response.ok) throw new Error(`API request failed: HTTP ${response.status}`);
+   const data = await response.json();
+   const list = Array.isArray(data) ? data : Array.isArray(data.properties) ? data.properties : Array.isArray(data.recommendations) ? data.recommendations : null;
+   if (!list) throw new Error("The API response does not contain a property list.");
+   allProperties = list.filter(p=>getPropertyId(p));
+   renderProperties();
+   return;
+  } catch (error) {
+   lastError = error;
+   console.warn(`Could not load ${endpoint}:`,error);
+  }
+ }
+ console.error("ESTARA property loading error:",lastError);
+ propertyGrid.innerHTML = `<div class="error-state"><h3>Unable to load properties</h3><p>${escapeHTML(lastError?.message ?? "Unknown error")}</p><p>Check that Flask is running, then try again.</p><button class="primary-link" type="button" onclick="loadProperties()">Try again</button></div>`;
+ statusElement.textContent = "There was a problem loading property listings.";
+}
+
+sortOrder.addEventListener("change",renderProperties);
+savedToggle.addEventListener("click",()=>{
+ showingSaved=!showingSaved;
+ savedToggle.textContent=showingSaved?"Show All Properties":"♡ Show Saved";
+ renderProperties();
+});
+$("clearCompareButton").addEventListener("click",clearCompareSelection);
+loadProperties();
+</script>
+</body>
+</html>

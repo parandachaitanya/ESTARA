@@ -1,0 +1,10 @@
+{
+  "model": "RandomForestRegressor",
+  "dataset_rows_used": 3660,
+  "training_rows": 2928,
+  "testing_rows": 732,
+  "mae_rupees": 3278767.6,
+  "r2_score": 0.6449,
+  "target": "Listing price in rupees",
+  "warning": "Evaluation uses a random holdout of listing data. It does not establish future market accuracy."
+}

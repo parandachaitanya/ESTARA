@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#172554">
+    <title>ESTARA | Buyer-Seller Messages</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #12304a;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        main {
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px #0000000a;
+        }
+
+        h1, h2 { margin-top: 0; }
+
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid #93c5fd;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button, .button-link {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 8px;
+            background: #176b87;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover, .button-link:hover {
+            background: #10536b;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .message-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            overflow-wrap: anywhere;
+            background: #fff;
+        }
+
+        .message-card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #12304a;
+        }
+
+        .property-tag {
+            display: inline-block;
+            background: #e8edff;
+            color: #273777;
+            padding: 6px 10px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .message-text {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: .9rem;
+        }
+
+        .status {
+            margin-top: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 12px;
+            border-radius: 8px;
+            line-height: 1.5;
+            margin: 16px 0;
+        }
+
+        .empty-state {
+            padding: 22px;
+            background: #f8fafc;
+            border-radius: 10px;
+            text-align: center;
+            color: #64748b;
+            margin-top: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .secondary-button {
+            background: #e8edff;
+            color: #172554;
+        }
+
+        .secondary-button:hover {
+            background: #dbe4ff;
+        }
+
+        @media (max-width: 600px) {
+            .panel { padding: 18px; }
+            header { padding: 16px 5%; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a href="/">ESTARA 🏠</a>
+
+    <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/search">Search</a>
+        <a href="/results">Properties</a>
+    </nav>
+</header>
+
+<main>
+    <section class="panel">
+        <h1>💬 Contact About a Property</h1>
+        <p>Interested in a property? Send a message using the form below.</p>
+
+        <form id="messageForm">
+            <label for="propertyId">Property ID</label>
+            <input
+                id="propertyId"
+                name="propertyId"
+                maxlength="100"
+                required
+                placeholder="Example: EST-001"
+            >
+
+            <label for="senderName">Your name</label>
+            <input
+                id="senderName"
+                name="senderName"
+                maxlength="100"
+                required
+                autocomplete="name"
+                placeholder="Enter your name"
+            >
+
+            <label for="senderEmail">Your email</label>
+            <input
+                id="senderEmail"
+                name="senderEmail"
+                type="email"
+                maxlength="254"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+            >
+
+            <label for="message">Your message</label>
+            <textarea
+                id="message"
+                name="message"
+                maxlength="2000"
+                required
+                placeholder="I am interested in this property. Could you share more details?"
+            ></textarea>
+
+            <div class="form-actions">
+                <button type="submit" id="sendButton">Send Message →</button>
+                <button type="reset" class="secondary-button">Clear Form</button>
+            </div>
+
+            <p class="status" id="status" role="status" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>📬 Message Inbox</h2>
+        <p>Review messages saved in the ESTARA demo database.</p>
+
+        <div class="notice">
+            <strong>Student-project demo:</strong> this inbox currently has no
+            login or access control. Use test information only. Do not expose
+            real buyer contact details on a public deployment.
+        </div>
+
+        <label for="filterPropertyId">Filter by Property ID (optional)</label>
+        <input
+            id="filterPropertyId"
+            placeholder="Example: EST-001"
+        >
+
+        <div class="form-actions">
+            <button type="button" id="loadButton">Load Messages</button>
+            <button type="button" id="clearFilterButton" class="secondary-button">
+                Show All Messages
+            </button>
+        </div>
+
+        <p class="status" id="inboxStatus" role="status" aria-live="polite"></p>
+        <div id="messages"></div>
+    </section>
+</main>
+
+<script>
+"use strict";
+
+const params = new URLSearchParams(window.location.search);
+
+const propertyIdInput = document.getElementById("propertyId");
+const messageForm = document.getElementById("messageForm");
+const status = document.getElementById("status");
+const inboxStatus = document.getElementById("inboxStatus");
+const messagesContainer = document.getElementById("messages");
+const sendButton = document.getElementById("sendButton");
+
+propertyIdInput.value = params.get("property_id") || "";
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function formatDate(value) {
+    if (!value) return "Date not available";
+
+    const parsed = new Date(value);
+
+    if (Number.isNaN(parsed.getTime())) {
+        // Display the original database value if it isn't a standard date.
+        return String(value);
+    }
+
+    return parsed.toLocaleString();
+}
+
+messageForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    sendButton.disabled = true;
+    sendButton.textContent = "Sending...";
+    status.textContent = "Sending your message...";
+
+    const payload = {
+        property_id: propertyIdInput.value.trim(),
+        sender_name: document.getElementById("senderName").value.trim(),
+        sender_email: document.getElementById("senderEmail").value.trim(),
+        message: document.getElementById("message").value.trim()
+    };
+
+    try {
+        const response = await fetch("/api/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Could not send message.");
+        }
+
+        status.textContent = "✅ Message saved successfully!";
+        document.getElementById("message").value = "";
+
+        document.getElementById("filterPropertyId").value =
+            payload.property_id;
+
+        await loadMessages();
+
+    } catch (error) {
+        status.textContent = "❌ " + error.message;
+    } finally {
+        sendButton.disabled = false;
+        sendButton.textContent = "Send Message →";
+    }
+});
+
+async function loadMessages() {
+    messagesContainer.replaceChildren();
+    inboxStatus.textContent = "Loading messages...";
+
+    const filter = document.getElementById("filterPropertyId").value.trim();
+    const query = filter
+        ? "?property_id=" + encodeURIComponent(filter)
+        : "";
+
+    try {
+        const response = await fetch("/api/messages" + query);
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Could not load messages.");
+        }
+
+        if (!Array.isArray(result)) {
+            throw new Error("Unexpected response from the message API.");
+        }
+
+        if (result.length === 0) {
+            inboxStatus.textContent = "No messages found for this filter.";
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent =
+                "📭 No messages yet. Submit the form above to add a test message.";
+            messagesContainer.appendChild(empty);
+            return;
+        }
+
+        inboxStatus.textContent =
+            result.length + (result.length === 1 ? " message found." : " messages found.");
+
+        result.forEach(item => {
+            const card = document.createElement("article");
+            card.className = "message-card";
+
+            const propertyName = item.property_name || "Property name unavailable";
+            const propertyId = item.property_id || "ID unavailable";
+            const senderName = item.sender_name || "Name not provided";
+            const senderEmail = item.sender_email || "Email not provided";
+            const messageText = item.message || "";
+            const createdAt = formatDate(item.created_at);
+
+            card.innerHTML = `
+                <h3>${escapeHTML(propertyName)}</h3>
+                <span class="property-tag">Property ID: ${escapeHTML(propertyId)}</span>
+                <p><strong>👤 Buyer:</strong> ${escapeHTML(senderName)}</p>
+                <p><strong>📧 Email:</strong> ${escapeHTML(senderEmail)}</p>
+                <p><strong>💬 Message:</strong></p>
+                <div class="message-text">${escapeHTML(messageText)}</div>
+                <p class="muted">🕒 Received: ${escapeHTML(createdAt)}</p>
+            `;
+
+            messagesContainer.appendChild(card);
+        });
+
+    } catch (error) {
+        inboxStatus.textContent = "❌ " + error.message;
+    }
+}
+
+document.getElementById("loadButton").addEventListener("click", loadMessages);
+
+document.getElementById("clearFilterButton").addEventListener("click", () => {
+    document.getElementById("filterPropertyId").value = "";
+    loadMessages();
+});
+
+loadMessages();
+</script>
+
+</body>
+</html>
+

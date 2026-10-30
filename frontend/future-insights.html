@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESTARA | Future Insights</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #080d1c;
+    color: #f1f5f9;
+}
+
+header {
+    padding: 20px 6%;
+    background: #101a35;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    border-bottom: 1px solid #293957;
+}
+
+.logo { color: #93c5fd; margin: 0; }
+
+nav { display: flex; gap: 18px; flex-wrap: wrap; }
+
+nav a {
+    color: #dbeafe;
+    text-decoration: none;
+}
+
+nav a:hover { color: #60a5fa; }
+
+main { width: min(900px, 92%); margin: 35px auto; }
+
+.card {
+    background: #111a2e;
+    border: 1px solid #293957;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 22px;
+}
+
+h1, h2 { color: #bfdbfe; }
+
+p { color: #cbd5e1; line-height: 1.7; }
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    background: #080d1c;
+    color: white;
+    border: 1px solid #475569;
+    border-radius: 8px;
+}
+
+button, .link {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 12px 17px;
+    border: 0;
+    border-radius: 8px;
+    background: #3b82f6;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button:hover, .link:hover { background: #2563eb; }
+
+#result { display: none; }
+
+.metric {
+    padding: 16px;
+    background: #0b1530;
+    border: 1px solid #33466e;
+    border-radius: 10px;
+}
+
+.metric strong {
+    display: block;
+    color: #93c5fd;
+    font-size: 24px;
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+}
+
+.error { color: #fca5a5; }
+
+.note { color: #94a3b8; font-size: 13px; }
+
+@media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .card { padding: 18px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+    <h2 class="logo">ESTARA</h2>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/price-prediction">ML Price Prediction</a>
+        <a href="/future-insights">Future Insights</a>
+    </nav>
+</header>
+
+<main>
+    <section class="card">
+        <h1>Future Property Insights</h1>
+        <p>
+            Enter your own property numbers to calculate a possible
+            investment outcome. Results appear only after submission.
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Property Investment Calculator</h2>
+
+        <form id="insightForm">
+            <div class="grid">
+                <div>
+                    <label for="buy">Purchase price (₹)</label>
+                    <input id="buy" type="number" min="1" step="any"
+                           placeholder="Example: 4000000" required>
+                </div>
+
+                <div>
+                    <label for="sell">Expected selling price (₹)</label>
+                    <input id="sell" type="number" min="1" step="any"
+                           placeholder="Example: 5000000" required>
+                </div>
+
+                <div>
+                    <label for="costs">Other costs (₹)</label>
+                    <input id="costs" type="number" min="0" step="any"
+                           value="0" required>
+                </div>
+
+                <div>
+                    <label for="months">Holding period (months)</label>
+                    <input id="months" type="number" min="1" step="1"
+                           placeholder="Example: 12" required>
+                </div>
+            </div>
+
+            <button type="submit" id="calculateButton">
+                Calculate Insights
+            </button>
+        </form>
+    </section>
+
+    <section class="card" id="result" aria-live="polite">
+        <h2>Your Investment Results</h2>
+        <div class="grid">
+            <div class="metric">
+                Estimated profit or loss
+                <strong id="profit"></strong>
+            </div>
+            <div class="metric">
+                Return on investment
+                <strong id="roi"></strong>
+            </div>
+            <div class="metric">
+                Break-even selling price
+                <strong id="breakEven"></strong>
+            </div>
+            <div class="metric">
+                Average monthly gain or loss
+                <strong id="monthly"></strong>
+            </div>
+        </div>
+        <p id="summary"></p>
+        <p class="note">
+            These are calculations based on your inputs, not a prediction
+            of future market prices. Taxes, financing, and unentered costs
+            can change your actual outcome.
+        </p>
+    </section>
+
+    <section class="card">
+        <h2>Need an ML price estimate?</h2>
+        <p>
+            Use the trained model to estimate a listing price from the
+            property's area, BHK, location, type, and building status.
+        </p>
+        <a class="link" href="/price-prediction">Open ML Price Prediction</a>
+    </section>
+</main>
+
+<script>
+const form = document.getElementById("insightForm");
+const result = document.getElementById("result");
+
+function inr(value) {
+    return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+    }).format(value);
+}
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const buy = Number(document.getElementById("buy").value);
+    const sell = Number(document.getElementById("sell").value);
+    const costs = Number(document.getElementById("costs").value);
+    const months = Number(document.getElementById("months").value);
+
+    if (
+        !Number.isFinite(buy) || !Number.isFinite(sell) ||
+        !Number.isFinite(costs) || !Number.isFinite(months) ||
+        buy <= 0 || sell <= 0 || costs < 0 || months <= 0
+    ) {
+        result.style.display = "block";
+        result.innerHTML = '<p class="error">Please enter valid positive prices and holding period, and non-negative costs.</p>';
+        return;
+    }
+
+    const totalCost = buy + costs;
+    const profit = sell - totalCost;
+    const roi = (profit / totalCost) * 100;
+    const monthly = profit / months;
+
+    document.getElementById("profit").textContent = inr(profit);
+    document.getElementById("roi").textContent = roi.toFixed(2) + "%";
+    document.getElementById("breakEven").textContent = inr(totalCost);
+    document.getElementById("monthly").textContent = inr(monthly);
+
+    document.getElementById("summary").textContent =
+        profit > 0
+        ? "Based on your inputs, the sale would produce a profit before any additional unentered expenses."
+        : profit < 0
+        ? "Based on your inputs, the sale would produce a loss."
+        : "Based on your inputs, the sale would break even.";
+
+    result.style.display = "block";
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+</script>
+</body>
+</html>

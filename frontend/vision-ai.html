@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTARA | Vision AI</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            color: #26332f;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 25px rgba(0,0,0,.08);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #176b55;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        h1, h2, .property-card h3 { color: #176b55; }
+
+        .description {
+            line-height: 1.6;
+            color: #58645f;
+        }
+
+        .upload-box {
+            margin-top: 24px;
+            padding: 24px;
+            border: 2px dashed #9bbdb2;
+            border-radius: 12px;
+            background: #f9fcfb;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin: 18px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #176b55;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover { background: #10513f; }
+        button:disabled { opacity: .6; cursor: not-allowed; }
+
+        #preview {
+            display: none;
+            max-width: 100%;
+            max-height: 320px;
+            margin: 16px 0;
+            border-radius: 10px;
+            object-fit: contain;
+        }
+
+        #status {
+            margin-top: 20px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .error { color: #b42318; }
+        .success { color: #176b55; }
+
+        #results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        #resultsHeading { display: none; margin-top: 30px; }
+
+        .property-card {
+            padding: 16px;
+            border: 1px solid #e0e8e4;
+            border-radius: 12px;
+            background: white;
+            overflow-wrap: anywhere;
+        }
+
+        .property-card h3 { margin-top: 0; }
+
+        .property-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .property-info {
+            color: #58645f;
+            line-height: 1.6;
+            font-size: 14px;
+            margin: 7px 0;
+        }
+
+        .similarity {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #e5f4ed;
+            color: #176b55;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="container">
+
+    <a class="back-link" href="/">← Back to ESTARA</a>
+
+    <h1>ESTARA Vision AI</h1>
+
+    <p class="description">
+        Upload a property image to discover visually similar properties
+        from the ESTARA property collection using deep-learning image features.
+    </p>
+
+    <form id="visionForm">
+        <div class="upload-box">
+
+            <label for="image"><strong>Select a property image</strong></label>
+
+            <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                required
+            >
+
+            <img id="preview" alt="Selected property image preview">
+
+            <button type="submit" id="submitButton">
+                Find Similar Properties
+            </button>
+
+        </div>
+    </form>
+
+    <div id="status" role="status" aria-live="polite"></div>
+
+    <h2 id="resultsHeading">Similar Properties</h2>
+
+    <section id="results" aria-label="Similar properties"></section>
+
+</main>
+
+<script>
+const form = document.getElementById("visionForm");
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
+const statusBox = document.getElementById("status");
+const resultsBox = document.getElementById("results");
+const resultsHeading = document.getElementById("resultsHeading");
+const submitButton = document.getElementById("submitButton");
+
+let previewUrl = null;
+let activeController = null;
+
+
+// IMAGE PREVIEW
+imageInput.addEventListener("change", function () {
+    const file = imageInput.files[0];
+
+    resultsBox.replaceChildren();
+    resultsHeading.style.display = "none";
+    statusBox.textContent = "";
+    statusBox.className = "";
+
+    if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+    }
+
+    preview.style.display = "none";
+    preview.removeAttribute("src");
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+        statusBox.textContent = "Please select a valid image.";
+        statusBox.className = "error";
+        imageInput.value = "";
+        return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+        statusBox.textContent = "Image must be smaller than 8 MB.";
+        statusBox.className = "error";
+        imageInput.value = "";
+        return;
+    }
+
+    previewUrl = URL.createObjectURL(file);
+    preview.src = previewUrl;
+    preview.style.display = "block";
+});
+
+
+// SAFE PROPERTY DETAIL DISPLAY
+function addDetail(card, label, value) {
+    if (value === null || value === undefined || value === "") return;
+
+    const paragraph = document.createElement("p");
+    paragraph.className = "property-info";
+
+    const strong = document.createElement("strong");
+    strong.textContent = label + ": ";
+
+    paragraph.appendChild(strong);
+    paragraph.appendChild(document.createTextNode(String(value)));
+    card.appendChild(paragraph);
+}
+
+
+// PROPERTY IMAGE
+function getPropertyImage(property) {
+    return (
+        property.image ||
+        property.image_url ||
+        property.imageUrl ||
+        property.photo ||
+        property.photo_url ||
+        ""
+    );
+}
+
+
+// DISPLAY MATCHING PROPERTIES
+function showProperties(data) {
+    const matches = Array.isArray(data)
+        ? data
+        : (
+            data.matches ||
+            data.results ||
+            data.properties ||
+            data.similar_properties ||
+            []
+        );
+
+    if (!Array.isArray(matches)) {
+        throw new Error("The server did not return a valid property list.");
+    }
+
+    if (matches.length === 0) {
+        statusBox.textContent =
+            "No similar properties found. Check whether your listings contain accessible images.";
+        statusBox.className = "success";
+        return;
+    }
+
+    resultsHeading.style.display = "block";
+
+    matches.forEach(function (match) {
+
+        // Backend structure: { property: {...}, similarity: 0.85 }
+        const property = match.property || match;
+
+        const card = document.createElement("article");
+        card.className = "property-card";
+
+        const title = document.createElement("h3");
+        title.textContent =
+            property.title ||
+            property.name ||
+            property.property_name ||
+            "Property";
+
+        card.appendChild(title);
+
+        const imageUrl = getPropertyImage(property);
+
+        if (imageUrl) {
+            const image = document.createElement("img");
+            image.src = imageUrl;
+            image.alt = title.textContent;
+            image.loading = "lazy";
+
+            image.onerror = function () {
+                image.style.display = "none";
+            };
+
+            card.appendChild(image);
+        }
+
+        addDetail(card, "Location",
+            property.location || property.address);
+
+        addDetail(card, "Price",
+            property.price || property.budget);
+
+        addDetail(card, "Bedrooms",
+            property.bhk || property.bedrooms);
+
+        addDetail(card, "Property Type",
+            property.propertyType ||
+            property.property_type ||
+            property.type);
+
+        addDetail(card, "Area",
+            property.area || property.area_sqft);
+
+        const similarity =
+            match.similarity ??
+            match.similarity_score ??
+            property.similarity;
+
+        if (similarity !== null && similarity !== undefined) {
+            const score = Number(similarity);
+            const badge = document.createElement("span");
+            badge.className = "similarity";
+
+            badge.textContent = "Visual Similarity: " +
+                (
+                    Number.isFinite(score)
+                        ? (score * 100).toFixed(1) + "%"
+                        : String(similarity)
+                );
+
+            card.appendChild(badge);
+        }
+
+        resultsBox.appendChild(card);
+    });
+
+    statusBox.textContent =
+        matches.length + " similar property result(s) found.";
+
+    statusBox.className = "success";
+}
+
+
+// IMAGE SEARCH REQUEST
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const file = imageInput.files[0];
+
+    if (!file) {
+        statusBox.textContent = "Please select a property image first.";
+        statusBox.className = "error";
+        return;
+    }
+
+    if (activeController) {
+        activeController.abort();
+    }
+
+    const controller = new AbortController();
+    activeController = controller;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Finding Similar Properties...";
+
+    statusBox.textContent =
+        "Comparing your image with ESTARA property listings...";
+
+    statusBox.className = "";
+    resultsBox.replaceChildren();
+    resultsHeading.style.display = "none";
+
+    const timeoutId = setTimeout(function () {
+        controller.abort();
+    }, 120000);
+
+    try {
+        const response = await fetch("/api/vision-search", {
+            method: "POST",
+            body: formData,
+            signal: controller.signal
+        });
+
+        const responseText = await response.text();
+
+        let data;
+
+        try {
+            data = responseText ? JSON.parse(responseText) : {};
+        } catch {
+            throw new Error(
+                "Invalid server response. Check the Flask terminal."
+            );
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                data.message ||
+                "Server error: HTTP " + response.status
+            );
+        }
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        showProperties(data);
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            statusBox.textContent =
+                "The request timed out or was cancelled. Check the Flask terminal.";
+        } else {
+            statusBox.textContent =
+                error.message || "Something went wrong.";
+        }
+
+        statusBox.className = "error";
+
+    } finally {
+        clearTimeout(timeoutId);
+
+        if (activeController === controller) {
+            activeController = null;
+        }
+
+        submitButton.disabled = false;
+        submitButton.textContent = "Find Similar Properties";
+    }
+});
+</script>
+
+</body>
+</html>

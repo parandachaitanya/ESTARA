@@ -1,0 +1,798 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#172554">
+    <title>Compare Properties | ESTARA</title>
+    <link rel="stylesheet" href="/static/assets/css/styles.css">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--background, #f7f8fc);
+            color: #172554 !important;
+        }
+
+        .compare-container {
+            width: min(1100px, 92%);
+            margin: 36px auto;
+        }
+
+        .compare-heading {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .compare-heading .eyebrow {
+            color: #4658c8 !important;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 12px;
+        }
+
+        .compare-heading h1 {
+            margin: 10px 0;
+            font-size: clamp(28px, 4vw, 42px);
+            color: #172554 !important;
+        }
+
+        .compare-heading p,
+        .selector-card .hint {
+            color: #475569 !important;
+            line-height: 1.7;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .selector-card {
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+        }
+
+        .selector-card label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #172554 !important;
+        }
+
+        .selector-card select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background: #fff !important;
+            color: #172554 !important;
+            font: inherit;
+        }
+
+        .compare-button {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 10px;
+            background: #172554;
+            color: #fff !important;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .compare-button:hover { background: #293d78; }
+        .compare-button:disabled { opacity: .6; cursor: not-allowed; }
+
+        .status-message {
+            margin: 18px 0;
+            padding: 14px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #293d78 !important;
+            line-height: 1.6;
+        }
+
+        .status-message:empty { display: none; }
+
+        .comparison-panel,
+        .recommendation-panel {
+            margin-top: 28px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+        }
+
+        .comparison-title {
+            padding: 22px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-title h2 {
+            margin: 0;
+            color: #172554 !important;
+        }
+
+        .comparison-title p { color: #475569 !important; }
+
+        .comparison-table-wrap { overflow-x: auto; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid #e2e8f0;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            color: #334155 !important;
+        }
+
+        .comparison-table thead th {
+            background: #eef2ff !important;
+            color: #172554 !important;
+        }
+
+        .comparison-table tbody th {
+            width: 23%;
+            background: #f1f5f9 !important;
+        }
+
+        .comparison-table tbody td { background: #fff !important; }
+
+        .comparison-table tr:last-child th,
+        .comparison-table tr:last-child td { border-bottom: 0; }
+
+        .comparison-table .price-value {
+            color: #087f5b !important;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .property-thumb {
+            display: block;
+            width: 100%;
+            max-width: 220px;
+            height: 135px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #e5e7eb;
+            margin-top: 10px;
+        }
+
+        .property-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #304fc5 !important;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .property-link:hover { text-decoration: underline; }
+
+        .feature-tag {
+            display: inline-block;
+            margin: 3px 3px 3px 0;
+            padding: 5px 8px;
+            border-radius: 6px;
+            background: #e8f7ef !important;
+            color: #12683f !important;
+            font-size: 12px;
+        }
+
+        /* Smart recommendation styles */
+        .recommendation-content {
+            padding: 22px;
+            color: #334155 !important;
+            line-height: 1.8;
+        }
+
+        .recommendation-content h3 {
+            margin-top: 0;
+            color: #172554 !important;
+        }
+
+        .recommendation-winner {
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+        }
+
+        .recommendation-winner strong {
+            color: #065f46 !important;
+            font-size: 18px;
+        }
+
+        .recommendation-list {
+            padding-left: 22px;
+            margin-bottom: 0;
+        }
+
+        .recommendation-list li { margin-bottom: 8px; }
+
+        .recommendation-note {
+            margin-top: 16px;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #475569 !important;
+            font-size: 13px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: #475569 !important;
+            line-height: 1.7;
+        }
+
+        .empty-state h2 { color: #172554 !important; }
+
+        .footer {
+            margin-top: 48px;
+            padding: 22px;
+            text-align: center;
+            color: #475569 !important;
+        }
+
+        .navbar .nav-links a,
+        .navbar .logo { color: #172554; }
+
+        @media (max-width: 650px) {
+            .selector-grid { grid-template-columns: 1fr; }
+            .compare-container { margin-top: 24px; }
+            .selector-card { padding: 18px; }
+
+            .comparison-table th,
+            .comparison-table td { padding: 12px; }
+
+            .property-thumb { height: 110px; }
+        }
+    </style>
+</head>
+
+<body>
+<header class="container">
+    <nav class="navbar">
+        <a class="logo" href="/">ESTARA</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/search">Search</a>
+            <a href="/results">Properties</a>
+            <a href="/compare">Compare</a>
+            <a href="/inbox">Inbox</a>
+        </div>
+    </nav>
+</header>
+
+<main class="compare-container">
+    <section class="compare-heading">
+        <p class="eyebrow">ESTARA · SMART PROPERTY DISCOVERY</p>
+        <h1>Compare Properties 🏡</h1>
+        <p>Compare two properties side by side and make a more informed decision about your next home.</p>
+    </section>
+
+    <section class="selector-grid">
+        <div class="selector-card">
+            <label for="propertyOne">🏠 First Property</label>
+            <select id="propertyOne">
+                <option value="">Loading properties...</option>
+            </select>
+            <p class="hint">Choose your first property.</p>
+        </div>
+
+        <div class="selector-card">
+            <label for="propertyTwo">🏡 Second Property</label>
+            <select id="propertyTwo">
+                <option value="">Loading properties...</option>
+            </select>
+            <p class="hint">Choose a different property to compare.</p>
+        </div>
+    </section>
+
+    <button class="compare-button" id="compareButton" type="button">
+        Compare Properties →
+    </button>
+
+    <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
+
+    <section id="comparisonResult" class="comparison-panel" hidden>
+        <div class="comparison-title">
+            <h2>Property Comparison</h2>
+            <p>Review the details before making your decision.</p>
+        </div>
+
+        <div class="comparison-table-wrap">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Details</th>
+                        <th scope="col" id="firstPropertyHeading">Property 1</th>
+                        <th scope="col" id="secondPropertyHeading">Property 2</th>
+                    </tr>
+                </thead>
+                <tbody id="comparisonBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="recommendationPanel" class="recommendation-panel" hidden>
+        <div class="comparison-title">
+            <h2>🧠 ESTARA Smart Recommendation</h2>
+            <p>Compare the available details to help decide which property better fits your priorities.</p>
+        </div>
+        <div class="recommendation-content" id="recommendationContent"></div>
+    </section>
+
+    <div class="empty-state" id="emptyState">
+        <h2>Find your better match</h2>
+        <p>Select two properties above and click Compare Properties.</p>
+    </div>
+</main>
+
+<footer class="footer">
+    ESTARA · Find a home that fits your needs.
+</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+let allProperties = [];
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function getId(property) {
+    return String(property.id ?? property.propertyId ?? property._id ?? "");
+}
+
+function getName(property) {
+    return property.name ?? property.title ?? "Unnamed Property";
+}
+
+function getLocation(property) {
+    return property.location ?? "Not specified";
+}
+
+function getType(property) {
+    return property.type ?? property.propertyType ?? "Not specified";
+}
+
+function getBedroomsNumber(property) {
+    const value = property.bhk ?? property.bedrooms;
+    if (value === undefined || value === null || value === "") return null;
+
+    const match = String(value).match(/\d+(\.\d+)?/);
+    return match ? Number(match[0]) : null;
+}
+
+function getBedrooms(property) {
+    const value = getBedroomsNumber(property);
+    return value !== null ? value + " BHK" : "Not specified";
+}
+
+function getAreaNumber(property) {
+    const value = property.areaSqFt ??
+        property.area_sq_ft ??
+        property.sizeSqFt ??
+        property.squareFeet;
+
+    if (value === undefined || value === null || value === "") return null;
+
+    const number = Number(String(value).replace(/,/g, "").match(/[\d.]+/)?.[0]);
+    return Number.isFinite(number) && number > 0 ? number : null;
+}
+
+function getArea(property) {
+    const value = getAreaNumber(property);
+    return value !== null ? value.toLocaleString("en-IN") + " sq. ft." : "Not specified";
+}
+
+function getPriceLabel(property) {
+    if (property.priceLabel || property.priceFormatted) {
+        return property.priceLabel ?? property.priceFormatted;
+    }
+
+    const price = Number(property.price ?? property.priceValue);
+    if (!Number.isFinite(price) || price <= 0) return "Price not specified";
+
+    if (price >= 10000000) return "₹" + (price / 10000000).toFixed(2) + " crore";
+    if (price >= 100000) return "₹" + (price / 100000).toFixed(2) + " lakh";
+
+    return "₹" + price.toLocaleString("en-IN");
+}
+
+function getNumericPrice(property) {
+    const directValue = property.price ?? property.priceValue;
+
+    if (directValue !== undefined && directValue !== null && directValue !== "") {
+        const direct = Number(directValue);
+        if (Number.isFinite(direct) && direct > 0) return direct;
+    }
+
+    const label = String(property.priceLabel ?? property.priceFormatted ?? "")
+        .toLowerCase()
+        .replace(/,/g, "");
+
+    const match = label.match(/₹?\s*([\d.]+)\s*(crore|cr|lakh|lac)?/i);
+    if (!match) return null;
+
+    let value = Number(match[1]);
+    const unit = match[2] ?? "";
+
+    if (/crore|cr/i.test(unit)) value *= 10000000;
+    else if (/lakh|lac/i.test(unit)) value *= 100000;
+
+    return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function getFeatures(property) {
+    return Array.isArray(property.features) ? property.features : [];
+}
+
+function getImage(property) {
+    return property.image ||
+        property.imageUrl ||
+        (Array.isArray(property.images) ? property.images[0] : "") ||
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80";
+}
+
+function addPropertyOptions() {
+    const first = $("propertyOne");
+    const second = $("propertyTwo");
+
+    first.innerHTML = '<option value="">Select first property</option>';
+    second.innerHTML = '<option value="">Select second property</option>';
+
+    allProperties.forEach(property => {
+        const id = getId(property);
+        if (!id) return;
+
+        const label = getName(property) + " — " +
+            getLocation(property) + " — " + getPriceLabel(property);
+
+        for (const select of [first, second]) {
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = label;
+            select.appendChild(option);
+        }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const requestedId = params.get("id");
+
+    if (requestedId && allProperties.some(p => getId(p) === requestedId)) {
+        first.value = requestedId;
+        const alternative = allProperties.find(p => getId(p) !== requestedId);
+        if (alternative) second.value = getId(alternative);
+    } else if (allProperties.length >= 2) {
+        first.value = getId(allProperties[0]);
+        second.value = getId(allProperties[1]);
+    }
+
+    try {
+        const savedIds = JSON.parse(
+            sessionStorage.getItem("estaraCompareProperties") || "[]"
+        );
+
+        if (Array.isArray(savedIds) && savedIds.length >= 2) {
+            const validIds = savedIds.map(String).filter(id =>
+                allProperties.some(p => getId(p) === id)
+            );
+
+            if (validIds.length >= 2 && validIds[0] !== validIds[1]) {
+                first.value = validIds[0];
+                second.value = validIds[1];
+            }
+        }
+    } catch (error) {
+        console.warn("Could not restore comparison selection.", error);
+    }
+
+    updateOptionAvailability();
+}
+
+function updateOptionAvailability() {
+    const first = $("propertyOne");
+    const second = $("propertyTwo");
+
+    Array.from(second.options).forEach(option => {
+        option.disabled = Boolean(first.value) && option.value === first.value;
+    });
+
+    Array.from(first.options).forEach(option => {
+        option.disabled = Boolean(second.value) && option.value === second.value;
+    });
+}
+
+function buildRow(label, firstValue, secondValue) {
+    return `<tr>
+        <th scope="row">${escapeHTML(label)}</th>
+        <td>${firstValue}</td>
+        <td>${secondValue}</td>
+    </tr>`;
+}
+
+function renderProperty(property) {
+    const image = escapeHTML(getImage(property));
+    const name = escapeHTML(getName(property));
+    const id = encodeURIComponent(getId(property));
+
+    const features = getFeatures(property);
+    const featureHTML = features.length
+        ? features.map(feature =>
+            `<span class="feature-tag">${escapeHTML(feature)}</span>`
+          ).join("")
+        : "Not specified";
+
+    return {
+        name: `<strong>${name}</strong><br>
+            <img class="property-thumb" src="${image}" alt="${name}"
+                 loading="lazy"
+                 onerror="this.onerror=null;this.style.display='none'">
+            <br><a class="property-link" href="/property-details?id=${id}">View Details →</a>`,
+        price: `<span class="price-value">${escapeHTML(getPriceLabel(property))}</span>`,
+        location: escapeHTML(getLocation(property)),
+        type: escapeHTML(getType(property)),
+        bedrooms: escapeHTML(getBedrooms(property)),
+        area: escapeHTML(getArea(property)),
+        features: featureHTML
+    };
+}
+
+function formatPriceDifference(value) {
+    if (value >= 10000000) return "₹" + (value / 10000000).toFixed(2) + " crore";
+    if (value >= 100000) return "₹" + (value / 100000).toFixed(2) + " lakh";
+    return "₹" + value.toLocaleString("en-IN");
+}
+
+function buildRecommendation(first, second) {
+    const firstPrice = getNumericPrice(first);
+    const secondPrice = getNumericPrice(second);
+    const firstBedrooms = getBedroomsNumber(first);
+    const secondBedrooms = getBedroomsNumber(second);
+    const firstArea = getAreaNumber(first);
+    const secondArea = getAreaNumber(second);
+
+    const firstAdvantages = [];
+    const secondAdvantages = [];
+    const observations = [];
+
+    if (firstPrice !== null && secondPrice !== null) {
+        if (firstPrice < secondPrice) {
+            firstAdvantages.push("Lower listed price by " +
+                formatPriceDifference(secondPrice - firstPrice) + ".");
+        } else if (secondPrice < firstPrice) {
+            secondAdvantages.push("Lower listed price by " +
+                formatPriceDifference(firstPrice - secondPrice) + ".");
+        } else {
+            observations.push("Both properties have the same listed price.");
+        }
+    } else {
+        observations.push("A reliable price comparison is unavailable for one or both listings.");
+    }
+
+    if (firstBedrooms !== null && secondBedrooms !== null) {
+        if (firstBedrooms > secondBedrooms) {
+            firstAdvantages.push("More bedrooms listed.");
+        } else if (secondBedrooms > firstBedrooms) {
+            secondAdvantages.push("More bedrooms listed.");
+        } else {
+            observations.push("Both listings show the same number of bedrooms.");
+        }
+    } else {
+        observations.push("Bedroom information is incomplete for a full comparison.");
+    }
+
+    if (firstArea !== null && secondArea !== null) {
+        if (firstArea > secondArea) {
+            firstAdvantages.push("Larger listed area by " +
+                (firstArea - secondArea).toLocaleString("en-IN") + " sq. ft.");
+        } else if (secondArea > firstArea) {
+            secondAdvantages.push("Larger listed area by " +
+                (secondArea - firstArea).toLocaleString("en-IN") + " sq. ft.");
+        } else {
+            observations.push("Both listings show the same area.");
+        }
+    } else {
+        observations.push("Area information is incomplete for a full comparison.");
+    }
+
+    let recommendationTitle;
+    let recommendationText;
+
+    if (firstAdvantages.length > secondAdvantages.length) {
+        recommendationTitle = getName(first);
+        recommendationText = "Based on the available listing details, this property has more advantages among the price, bedroom, and area comparisons.";
+    } else if (secondAdvantages.length > firstAdvantages.length) {
+        recommendationTitle = getName(second);
+        recommendationText = "Based on the available listing details, this property has more advantages among the price, bedroom, and area comparisons.";
+    } else {
+        recommendationTitle = "No clear winner yet";
+        recommendationText = "The available details do not establish an overall winner. Choose based on your budget, preferred location, condition, and personal needs.";
+    }
+
+    const listItems = [];
+
+    if (firstAdvantages.length) {
+        listItems.push(`<li><strong>${escapeHTML(getName(first))}:</strong> ${firstAdvantages.map(escapeHTML).join(" ")}</li>`);
+    }
+
+    if (secondAdvantages.length) {
+        listItems.push(`<li><strong>${escapeHTML(getName(second))}:</strong> ${secondAdvantages.map(escapeHTML).join(" ")}</li>`);
+    }
+
+    if (observations.length) {
+        observations.forEach(item => listItems.push(`<li>${escapeHTML(item)}</li>`));
+    }
+
+    $("recommendationContent").innerHTML = `
+        <div class="recommendation-winner">
+            <strong>🏡 ${escapeHTML(recommendationTitle)}</strong>
+            <p>${escapeHTML(recommendationText)}</p>
+        </div>
+        <h3>Why?</h3>
+        <ul class="recommendation-list">
+            ${listItems.length ? listItems.join("") : "<li>Not enough comparable information is available.</li>"}
+        </ul>
+        <p class="recommendation-note">
+            This recommendation uses only the listing information available on this page.
+            It is a comparison aid, not a guarantee of property quality or investment value.
+            Verify the property's condition, legal documents, exact area, and total costs before deciding.
+        </p>
+    `;
+
+    $("recommendationPanel").hidden = false;
+}
+
+function compareProperties() {
+    const firstId = $("propertyOne").value;
+    const secondId = $("propertyTwo").value;
+
+    if (!firstId || !secondId) {
+        $("statusMessage").textContent =
+            "Please select both properties before comparing.";
+        return;
+    }
+
+    if (firstId === secondId) {
+        $("statusMessage").textContent =
+            "Please select two different properties.";
+        return;
+    }
+
+    const first = allProperties.find(p => getId(p) === firstId);
+    const second = allProperties.find(p => getId(p) === secondId);
+
+    if (!first || !second) {
+        $("statusMessage").textContent =
+            "A selected property could not be found. Please reload the page.";
+        return;
+    }
+
+    const a = renderProperty(first);
+    const b = renderProperty(second);
+
+    $("firstPropertyHeading").textContent = getName(first);
+    $("secondPropertyHeading").textContent = getName(second);
+
+    let html = "";
+    html += buildRow("Property", a.name, b.name);
+    html += buildRow("Price", a.price, b.price);
+    html += buildRow("Location", a.location, b.location);
+    html += buildRow("Property Type", a.type, b.type);
+    html += buildRow("Bedrooms", a.bedrooms, b.bedrooms);
+    html += buildRow("Area", a.area, b.area);
+    html += buildRow("Features", a.features, b.features);
+
+    const firstPrice = getNumericPrice(first);
+    const secondPrice = getNumericPrice(second);
+
+    let priceInsight =
+        "Price comparison unavailable because a numeric price is missing.";
+
+    if (firstPrice !== null && secondPrice !== null) {
+        if (firstPrice < secondPrice) {
+            priceInsight = escapeHTML(getName(first)) +
+                " has the lower listed price by " +
+                escapeHTML(formatPriceDifference(secondPrice - firstPrice)) + ".";
+        } else if (secondPrice < firstPrice) {
+            priceInsight = escapeHTML(getName(second)) +
+                " has the lower listed price by " +
+                escapeHTML(formatPriceDifference(firstPrice - secondPrice)) + ".";
+        } else {
+            priceInsight = "Both properties have the same listed price.";
+        }
+    }
+
+    html += buildRow("Price Insight", escapeHTML(priceInsight), "—");
+
+    $("comparisonBody").innerHTML = html;
+    $("comparisonResult").hidden = false;
+    $("emptyState").hidden = true;
+
+    buildRecommendation(first, second);
+
+    $("statusMessage").textContent =
+        "Comparison and smart recommendation are ready! Review the details before deciding.";
+
+    $("comparisonResult").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+async function loadProperties() {
+    $("statusMessage").textContent = "Loading property listings...";
+
+    try {
+        const response = await fetch("/api/properties");
+
+        if (!response.ok) throw new Error("Could not load properties.");
+
+        const data = await response.json();
+
+        allProperties = Array.isArray(data)
+            ? data
+            : Array.isArray(data.properties)
+                ? data.properties
+                : [];
+
+        allProperties = allProperties.filter(property => getId(property));
+
+        if (allProperties.length < 2) {
+            $("propertyOne").innerHTML = '<option value="">Not enough properties</option>';
+            $("propertyTwo").innerHTML = '<option value="">Not enough properties</option>';
+            $("compareButton").disabled = true;
+            $("statusMessage").textContent =
+                "At least two property listings with IDs are needed to compare.";
+            return;
+        }
+
+        addPropertyOptions();
+
+        $("statusMessage").textContent =
+            "Properties loaded. Choose two different listings to compare.";
+
+    } catch (error) {
+        console.error("Property loading error:", error);
+        $("statusMessage").textContent =
+            "Unable to load properties. Check that Flask is running and /api/properties works.";
+    }
+}
+
+$("propertyOne").addEventListener("change", updateOptionAvailability);
+$("propertyTwo").addEventListener("change", updateOptionAvailability);
+$("compareButton").addEventListener("click", compareProperties);
+
+loadProperties();
+</script>
+</body>
+</html>

@@ -1,0 +1,871 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#172554">
+    <title>Property Details | ESTARA</title>
+    <link rel="stylesheet" href="/static/assets/css/styles.css">
+
+    <style>
+        .details-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .details-panel {
+            padding: 24px;
+            border-radius: 16px;
+            background: var(--panel, #fff);
+            border: 1px solid var(--border, #e5e7eb);
+            margin-bottom: 22px;
+        }
+
+        .property-cover {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 14px;
+            background: #e5e7eb;
+            margin-bottom: 22px;
+        }
+
+        .property-price {
+            font-size: 28px;
+            font-weight: 800;
+            color: #087f5b;
+            margin: 16px 0;
+        }
+
+        .property-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .property-meta span {
+            padding: 8px 12px;
+            background: #edf0ff;
+            color: #273777;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .detail-heading {
+            margin: 18px 0 10px;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0;
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .feature-list li {
+            background: #e8f7ef;
+            color: #12683f;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .ai-panel {
+            background: linear-gradient(145deg, #172554, #334a86);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 22px;
+        }
+
+        .ai-panel h2 {
+            margin-bottom: 10px;
+        }
+
+        .ai-panel p {
+            line-height: 1.6;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            background: rgba(255,255,255,.15);
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .ai-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        .ai-actions button {
+            padding: 11px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 9px;
+            background: white;
+            color: #172554;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ai-actions button:hover {
+            background: #e8edff;
+        }
+
+        .ai-response {
+            margin-top: 18px;
+            padding: 16px;
+            background: rgba(255,255,255,.12);
+            border-radius: 10px;
+            line-height: 1.7;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .ai-response:empty {
+            display: none;
+        }
+
+        .ai-chat {
+            margin-top: 18px;
+        }
+
+        .ai-chat label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .ai-chat textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font: inherit;
+            resize: vertical;
+        }
+
+        .ai-chat button {
+            margin-top: 10px;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 9px;
+            background: #fbbf24;
+            color: #172554;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .ai-chat button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        .ai-note {
+            font-size: 12px;
+            opacity: .85;
+            margin-top: 12px;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-row a,
+        .action-row button {
+            display: inline-block;
+            padding: 12px 16px;
+            border: 0;
+            border-radius: 9px;
+            text-decoration: none;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary-action {
+            background: #172554;
+            color: white;
+        }
+
+        .secondary-action {
+            background: #edf0ff;
+            color: #172554;
+        }
+
+        .small-note {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        /* Nearby Places */
+        .nearby-places {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .nearby-place-link {
+            display: block;
+            padding: 12px;
+            border: 1px solid var(--border, #e5e7eb);
+            border-radius: 10px;
+            background: var(--panel, #fff);
+            color: var(--text, #172554);
+            text-decoration: none;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .nearby-place-link:hover {
+            background: #edf0ff;
+        }
+
+        .nearby-place-link span {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        @media (max-width: 760px) {
+            .details-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .property-cover {
+                height: 230px;
+            }
+
+            .ai-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .details-panel,
+            .ai-panel {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .nearby-places {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="container">
+    <nav class="navbar">
+        <a class="logo" href="/">ESTARA</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/search">Search</a>
+            <a href="/inbox">Inbox</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="section">
+
+        <div class="section-heading">
+            <p class="eyebrow">ESTARA · Property Discovery</p>
+            <h1 id="propertyName">Loading property...</h1>
+            <p id="propertyLocation">Finding property details...</p>
+        </div>
+
+        <div class="details-layout">
+
+            <div>
+                <article class="details-panel">
+
+                    <img
+                        id="propertyImage"
+                        class="property-cover"
+                        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80"
+                        alt="Property"
+                    >
+
+                    <h2 id="displayName">Property information</h2>
+                    <p class="property-price" id="propertyPrice">Loading price...</p>
+
+                    <div class="property-meta" id="propertyMeta"></div>
+
+                    <h3 class="detail-heading">About this property</h3>
+                    <p id="propertyDescription">Loading description...</p>
+
+                    <h3 class="detail-heading">Property features</h3>
+                    <ul class="feature-list" id="propertyFeatures"></ul>
+
+                    <p class="small-note" id="propertyId"></p>
+
+                    <div class="action-row">
+                        <button
+                            class="primary-action"
+                            type="button"
+                            id="savePropertyButton"
+                        >♡ Save Property</button>
+
+                        <button
+                            class="secondary-action"
+                            type="button"
+                            id="sharePropertyButton"
+                        >Share Property</button>
+
+                        <a
+                            class="primary-action"
+                            id="messageSellerButton"
+                            href="/inbox"
+                        >💬 Message Seller</a>
+
+                        <a class="secondary-action" href="/search">Search More</a>
+                        <a class="secondary-action" href="/results">Back to Results</a>
+                    </div>
+                </article>
+            </div>
+
+            <aside>
+                <section class="ai-panel">
+                    <span class="ai-badge">✦ ESTARA AI</span>
+                    <h2>AI Property Assistant</h2>
+
+                    <p>
+                        Explore this property, understand its features,
+                        and get guidance based on your property preferences.
+                    </p>
+
+                    <div class="ai-actions">
+                        <button type="button" data-question="summary">✨ Property Summary</button>
+                        <button type="button" data-question="budget">💰 Budget Insights</button>
+                        <button type="button" data-question="checklist">🏠 Buyer Checklist</button>
+                        <button type="button" data-question="questions">🔎 Questions to Ask</button>
+                    </div>
+
+                    <div class="ai-response" id="aiResponse" role="status" aria-live="polite"></div>
+
+                    <form class="ai-chat" id="aiForm">
+                        <label for="aiQuestion">Ask about this property</label>
+                        <textarea
+                            id="aiQuestion"
+                            placeholder="Example: What should I check before buying this property?"
+                            required
+                            maxlength="1000"
+                        ></textarea>
+                        <button type="submit" id="askAIButton">Ask ESTARA AI →</button>
+                    </form>
+
+                    <p class="ai-note">
+                        Property guidance is informational. Verify legal documents,
+                        actual costs, and property details independently before purchasing.
+                    </p>
+                </section>
+
+                <!-- Nearby Places -->
+                <section class="details-panel">
+                    <h2>📍 Explore Nearby Places</h2>
+                    <p class="small-note">
+                        Explore schools, hospitals, colleges, shopping and transport
+                        around this property's listed neighbourhood.
+                    </p>
+
+                    <div id="nearbyPlaces" class="nearby-places">
+                        <p class="small-note">Loading location...</p>
+                    </div>
+
+                    <p class="small-note">
+                        These links search Google Maps for the property's neighbourhood.
+                        Check the exact location and route before visiting.
+                    </p>
+                </section>
+
+                <section class="details-panel">
+                    <h2>Smart Buyer Tips</h2>
+                    <p class="small-note">• Verify the title deed and ownership records.</p>
+                    <p class="small-note">• Check applicable RERA registration.</p>
+                    <p class="small-note">• Inspect water, electricity, roads, and access.</p>
+                    <p class="small-note">• Calculate registration, taxes, maintenance, and other additional costs.</p>
+                    <p class="small-note">• Visit the property and compare similar listings.</p>
+                </section>
+            </aside>
+
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">ESTARA · Smart Property Discovery</div>
+</footer>
+
+<script>
+"use strict";
+
+let currentProperty = null;
+const $ = id => document.getElementById(id);
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function getPropertyId(property) {
+    return String(property.id ?? property.propertyId ?? property._id ?? "");
+}
+
+function getPropertyName(property) {
+    return property.name ?? property.title ?? "Property";
+}
+
+function getPropertyLocation(property) {
+    return property.location ?? property.area ?? "Location not specified";
+}
+
+function getPropertyType(property) {
+    return property.type ?? property.propertyType ?? "Property";
+}
+
+function getPropertyBHK(property) {
+    return property.bhk ?? property.bedrooms ?? "";
+}
+
+function getPropertyArea(property) {
+    return property.areaSqFt ?? property.area ?? "";
+}
+
+function getPropertyPrice(property) {
+    if (property.priceLabel || property.priceFormatted) {
+        return property.priceLabel ?? property.priceFormatted;
+    }
+
+    const price = Number(property.price ?? property.priceValue);
+
+    if (!Number.isFinite(price)) return "Price on request";
+    if (price >= 10000000) return "₹" + (price / 10000000).toFixed(2) + " crore";
+    if (price >= 100000) return "₹" + (price / 100000).toFixed(2) + " lakh";
+
+    return "₹" + price.toLocaleString("en-IN");
+}
+
+function getPropertyImage(property) {
+    return property.image ||
+        property.imageUrl ||
+        (Array.isArray(property.images) ? property.images[0] : "") ||
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80";
+}
+
+/* Nearby Places: creates map searches based on the selected listing. */
+function displayNearbyPlaces(property) {
+    const container = $("nearbyPlaces");
+    if (!container) return;
+
+    const location = getPropertyLocation(property);
+
+    const categories = [
+        ["🏥", "Hospitals", "hospitals"],
+        ["🏫", "Schools", "schools"],
+        ["🎓", "Colleges", "colleges"],
+        ["🛍️", "Shopping", "shopping malls"],
+        ["🚇", "Metro stations", "metro stations"],
+        ["🚌", "Bus stops", "bus stops"],
+        ["🌳", "Parks", "parks"],
+        ["🍽️", "Restaurants", "restaurants"]
+    ];
+
+    container.innerHTML = categories.map(([emoji, label, query]) => {
+        const search = query + " near " + location + ", Hyderabad";
+        const url =
+            "https://www.google.com/maps/search/?api=1&query=" +
+            encodeURIComponent(search);
+
+        return `
+            <a class="nearby-place-link"
+               href="${url}"
+               target="_blank"
+               rel="noopener noreferrer">
+                ${emoji} ${label}
+                <span>Explore near ${escapeHTML(location)}</span>
+            </a>
+        `;
+    }).join("");
+}
+
+function getSavedProperties() {
+    try {
+        return JSON.parse(localStorage.getItem("estaraSavedProperties") || "[]");
+    } catch {
+        return [];
+    }
+}
+
+function isSaved(id) {
+    return getSavedProperties().includes(String(id));
+}
+
+function toggleSavedProperty() {
+    if (!currentProperty) return;
+
+    const id = getPropertyId(currentProperty);
+    let saved = getSavedProperties();
+
+    if (saved.includes(id)) {
+        saved = saved.filter(savedId => savedId !== id);
+    } else {
+        saved.push(id);
+    }
+
+    localStorage.setItem("estaraSavedProperties", JSON.stringify(saved));
+    updateSaveButton();
+}
+
+function updateSaveButton() {
+    if (!currentProperty) return;
+
+    $("savePropertyButton").textContent = isSaved(getPropertyId(currentProperty))
+        ? "♥ Saved Property"
+        : "♡ Save Property";
+}
+
+function displayProperty(property) {
+    currentProperty = property;
+
+    const name = getPropertyName(property);
+    const location = getPropertyLocation(property);
+    const type = getPropertyType(property);
+    const bhk = getPropertyBHK(property);
+    const area = getPropertyArea(property);
+    const features = Array.isArray(property.features) ? property.features : [];
+
+    document.title = name + " | ESTARA";
+    $("propertyName").textContent = name;
+    $("displayName").textContent = name;
+    $("propertyLocation").textContent = "📍 " + location;
+    $("propertyPrice").textContent = getPropertyPrice(property);
+    $("propertyDescription").textContent =
+        property.description ?? "No description available.";
+    $("propertyId").textContent = "Property ID: " + getPropertyId(property);
+
+    const image = $("propertyImage");
+    image.src = getPropertyImage(property);
+    image.alt = name;
+    image.onerror = function () {
+        this.onerror = null;
+        this.src =
+            "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80";
+    };
+
+    const metadata = [
+        type,
+        bhk !== "" ? bhk + " BHK" : "",
+        area !== "" ? area + " sq. ft." : ""
+    ].filter(Boolean);
+
+    $("propertyMeta").innerHTML = metadata
+        .map(item => `<span>${escapeHTML(item)}</span>`)
+        .join("");
+
+    $("propertyFeatures").innerHTML = features.length
+        ? features.map(feature => `<li>${escapeHTML(feature)}</li>`).join("")
+        : "<li>Features not specified</li>";
+
+    updateSaveButton();
+
+    /* Show Nearby Places for this property's listed location. */
+    displayNearbyPlaces(property);
+}
+
+async function loadProperty() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) {
+        $("propertyName").textContent = "No property selected";
+        $("propertyLocation").textContent =
+            "Open the results page and choose a property.";
+        $("propertyDescription").textContent =
+            "A property ID is required to display its details.";
+        $("propertyPrice").textContent = "";
+        $("propertyMeta").innerHTML = "";
+        $("propertyFeatures").innerHTML = "";
+        $("nearbyPlaces").innerHTML =
+            '<p class="small-note">Select a property to explore nearby places.</p>';
+        return;
+    }
+
+    try {
+        const cached = sessionStorage.getItem("estaraSelectedProperty");
+
+        if (cached) {
+            const candidate = JSON.parse(cached);
+
+            if (getPropertyId(candidate) === id) {
+                displayProperty(candidate);
+                return;
+            }
+        }
+    } catch (error) {
+        console.warn("Could not read cached property:", error);
+    }
+
+    const response = await fetch("/api/properties");
+
+    if (!response.ok) {
+        throw new Error("Property API returned " + response.status);
+    }
+
+    const data = await response.json();
+    const properties = Array.isArray(data)
+        ? data
+        : Array.isArray(data.properties) ? data.properties : [];
+
+    const property = properties.find(item => getPropertyId(item) === id);
+
+    if (!property) {
+        $("propertyName").textContent = "Property not found";
+        $("propertyLocation").textContent = "";
+        $("propertyPrice").textContent = "";
+        $("propertyDescription").textContent =
+            "Return to the results page and select an available property.";
+        $("propertyMeta").innerHTML = "";
+        $("propertyFeatures").innerHTML = "";
+        $("nearbyPlaces").innerHTML =
+            '<p class="small-note">Nearby places are unavailable because this property was not found.</p>';
+        return;
+    }
+
+    displayProperty(property);
+}
+
+function getLocalInsight(topic) {
+    if (!currentProperty) return "Please select a property first.";
+
+    const property = currentProperty;
+    const name = getPropertyName(property);
+    const location = getPropertyLocation(property);
+    const price = getPropertyPrice(property);
+    const type = getPropertyType(property);
+    const bhk = getPropertyBHK(property);
+    const features = Array.isArray(property.features) ? property.features : [];
+
+    if (topic === "summary") {
+        return `PROPERTY SUMMARY
+
+${name}
+Location: ${location}
+Type: ${type}
+Bedrooms: ${bhk || "Not specified"}
+Price: ${price}
+
+${property.description || "No description provided."}
+
+Listed features: ${features.length ? features.join(", ") : "Not specified"}
+
+Please verify the listing information with the seller.`;
+    }
+
+    if (topic === "budget") {
+        return `BUDGET INSIGHTS
+
+Listed price: ${price}
+
+Before deciding, also budget for:
+• Registration and applicable stamp duty
+• Loan processing fees and interest
+• Repairs, furnishing, and moving costs
+• Maintenance and community charges
+• Taxes and other applicable fees
+
+The final cost depends on your circumstances and local rules. Ask the seller for a complete cost breakdown.`;
+    }
+
+    if (topic === "checklist") {
+        return `BUYER CHECKLIST
+
+For ${name} in ${location}:
+
+□ Verify ownership and title documents.
+□ Check applicable RERA registration.
+□ Confirm the approved building plan and permissions.
+□ Inspect water, electricity, drainage, and access.
+□ Check for loans, liens, and outstanding dues.
+□ Ask about maintenance and parking charges.
+□ Visit the property and inspect its condition.
+□ Compare prices with similar nearby properties.
+
+Consult a qualified property lawyer before paying a substantial amount.`;
+    }
+
+    if (topic === "questions") {
+        return `QUESTIONS TO ASK THE SELLER
+
+1. Are you the owner or an authorized agent?
+2. Are the title and approval documents available?
+3. What is included in the listed price?
+4. Are registration and other charges additional?
+5. Are there any pending loans or legal disputes?
+6. What are the maintenance and utility costs?
+7. Is parking included?
+8. Can I arrange an inspection?
+9. What is the expected possession date, if applicable?
+10. Is the price negotiable?`;
+    }
+
+    return "Choose a property insight to continue.";
+}
+
+function showInsight(topic) {
+    $("aiResponse").textContent = getLocalInsight(topic);
+}
+
+async function askPropertyAssistant(question) {
+    if (!currentProperty) {
+        $("aiResponse").textContent =
+            "Please select a property before asking a question.";
+        return;
+    }
+
+    const button = $("askAIButton");
+    button.disabled = true;
+    button.textContent = "Thinking...";
+
+    try {
+        const response = await fetch("/api/ai-property-assistant", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question,
+                property: {
+                    id: getPropertyId(currentProperty),
+                    name: getPropertyName(currentProperty),
+                    location: getPropertyLocation(currentProperty),
+                    type: getPropertyType(currentProperty),
+                    bhk: getPropertyBHK(currentProperty),
+                    price: currentProperty.price,
+                    priceLabel: getPropertyPrice(currentProperty),
+                    description: currentProperty.description ?? "",
+                    features: currentProperty.features ?? []
+                }
+            })
+        });
+
+        if (!response.ok) throw new Error("AI endpoint unavailable");
+
+        const data = await response.json();
+        const answer = data.answer ?? data.response;
+
+        if (!answer) throw new Error("No AI answer returned");
+
+        $("aiResponse").textContent = answer;
+
+    } catch (error) {
+        console.warn("AI service unavailable:", error);
+        $("aiResponse").textContent =
+            "The live AI service could not return an answer. Please check the Flask terminal and try again.\n\n" +
+            getLocalInsight("summary");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Ask ESTARA AI →";
+    }
+}
+
+document.querySelectorAll("[data-question]").forEach(button => {
+    button.addEventListener("click", () => showInsight(button.dataset.question));
+});
+
+$("aiForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const question = $("aiQuestion").value.trim();
+
+    if (!question) {
+        $("aiQuestion").focus();
+        return;
+    }
+
+    await askPropertyAssistant(question);
+});
+
+$("savePropertyButton").addEventListener("click", toggleSavedProperty);
+
+/* Open the inbox with the selected property's ID. */
+$("messageSellerButton").addEventListener("click", event => {
+    event.preventDefault();
+
+    if (!currentProperty) {
+        alert("Please wait for the property details to load.");
+        return;
+    }
+
+    const propertyId = getPropertyId(currentProperty);
+
+    if (!propertyId) {
+        alert("Property ID is unavailable.");
+        return;
+    }
+
+    window.location.href =
+        "/inbox?property_id=" + encodeURIComponent(propertyId);
+});
+
+$("sharePropertyButton").addEventListener("click", async () => {
+    const shareData = {
+        title: document.title,
+        text: "Explore this property on ESTARA",
+        url: window.location.href
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(window.location.href);
+            alert("Property link copied!");
+        } else {
+            prompt("Copy this property link:", window.location.href);
+        }
+    } catch (error) {
+        if (error.name !== "AbortError") {
+            alert("Unable to share this property right now.");
+        }
+    }
+});
+
+loadProperty().catch(error => {
+    console.error("Unable to load property:", error);
+
+    $("propertyName").textContent = "Unable to load property";
+    $("propertyLocation").textContent = "";
+    $("propertyDescription").textContent =
+        "Check that Flask is running and try again.";
+    $("propertyPrice").textContent = "";
+    $("nearbyPlaces").innerHTML =
+        '<p class="small-note">Nearby places could not be loaded. Please refresh and try again.</p>';
+});
+</script>
+
+</body>
+</html>

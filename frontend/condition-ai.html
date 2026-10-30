@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ESTARA | Property Condition AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #13243b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .panel {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 5px 22px #17203312;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #13243b;
+            margin-top: 25px;
+        }
+
+        h4 {
+            color: #176b87;
+            margin-top: 0;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input {
+            border: 1px solid #ccd5e1;
+        }
+
+        button {
+            border: 0;
+            background: #176b87;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #10536c;
+        }
+
+        button:disabled {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        #preview {
+            display: none;
+            max-width: 100%;
+            max-height: 350px;
+            margin: 18px auto;
+            border-radius: 10px;
+        }
+
+        #results {
+            margin-top: 22px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            background: #fff6df;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .error {
+            color: #b42318;
+        }
+
+        .finding-card {
+            background: #f4f7fb;
+            padding: 16px;
+            margin-bottom: 14px;
+            border-radius: 10px;
+            border-left: 4px solid #176b87;
+        }
+
+        .quality-card {
+            background: #eef5f8;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #586579;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>ESTARA</h1>
+    <p>AI-Powered Property Condition Analysis</p>
+</header>
+
+<main>
+    <section class="panel">
+
+        <h2>Analyze a Property Image</h2>
+
+        <p>
+            Upload a photo of a room, wall, ceiling, or property surface.
+            ESTARA AI will provide a preliminary visual assessment.
+        </p>
+
+        <form id="conditionForm">
+
+            <label for="propertyImage">
+                Choose a JPG, PNG, or WEBP image (maximum 8 MB)
+            </label>
+
+            <input
+                id="propertyImage"
+                name="image"
+                type="file"
+                accept=".jpg,.jpeg,.png,.webp"
+                required
+            >
+
+            <img
+                id="preview"
+                alt="Selected property photo"
+            >
+
+            <button id="analyzeButton" type="submit">
+                Analyze Image
+            </button>
+
+        </form>
+
+        <div id="results" aria-live="polite"></div>
+
+        <p class="notice">
+            <strong>Important:</strong>
+            This AI provides preliminary visual observations.
+            It cannot confirm hidden defects, active water leakage,
+            or structural safety. Consult a qualified property
+            inspector before purchasing.
+        </p>
+
+    </section>
+</main>
+
+<footer>
+    ESTARA — Real Estate Listing Platform
+</footer>
+
+<script>
+
+const form = document.getElementById("conditionForm");
+const fileInput = document.getElementById("propertyImage");
+const preview = document.getElementById("preview");
+const results = document.getElementById("results");
+const button = document.getElementById("analyzeButton");
+
+
+/* IMAGE PREVIEW */
+
+fileInput.addEventListener("change", () => {
+
+    const file = fileInput.files[0];
+
+    results.replaceChildren();
+
+    if (!file) {
+        preview.style.display = "none";
+        return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+
+        fileInput.value = "";
+        preview.style.display = "none";
+
+        results.textContent =
+            "Please select an image smaller than 8 MB.";
+
+        return;
+    }
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+});
+
+
+/* DISPLAY HELPERS */
+
+function addHeading(parent, text) {
+
+    const heading = document.createElement("h3");
+
+    heading.textContent = text;
+
+    parent.appendChild(heading);
+}
+
+
+function addParagraph(parent, text) {
+
+    const paragraph = document.createElement("p");
+
+    paragraph.textContent = text || "Not available.";
+
+    parent.appendChild(paragraph);
+}
+
+
+function addList(parent, items) {
+
+    const list = document.createElement("ul");
+
+    for (const item of (items || [])) {
+
+        const li = document.createElement("li");
+
+        li.textContent = item;
+
+        list.appendChild(li);
+    }
+
+    parent.appendChild(list);
+}
+
+
+/* IMAGE QUALITY RESULTS */
+
+function displayImageQuality(result) {
+
+    addHeading(results, "Image Quality Results");
+
+    const dimensions = document.createElement("div");
+
+    dimensions.className = "quality-card";
+
+    dimensions.textContent =
+        `Image size: ${result.image_width} × ${result.image_height} pixels`;
+
+    results.appendChild(dimensions);
+
+    const measurements = [
+        ["Brightness", result.brightness],
+        ["Contrast", result.contrast],
+        ["Sharpness", result.sharpness],
+        ["Edge percentage", result.edge_percentage]
+    ];
+
+    for (const [label, value] of measurements) {
+
+        const card = document.createElement("div");
+
+        card.className = "quality-card";
+
+        card.textContent = `${label}: ${value}`;
+
+        results.appendChild(card);
+    }
+
+    addHeading(results, "Image Observations");
+
+    addList(results, result.observations);
+}
+
+
+/* GROQ AI DAMAGE ANALYSIS RESULTS */
+
+function displayDamageAnalysis(analysis) {
+
+    if (!analysis) {
+
+        addParagraph(
+            results,
+            "AI damage analysis was not returned."
+        );
+
+        return;
+    }
+
+    addHeading(results, "AI Property Condition Assessment");
+
+    const summaryCard = document.createElement("div");
+
+    summaryCard.className = "finding-card";
+
+    const condition = document.createElement("h4");
+
+    condition.textContent =
+        "Overall Condition: " +
+        (analysis.overall_condition || "Unclear");
+
+    summaryCard.appendChild(condition);
+
+    addParagraph(
+        summaryCard,
+        analysis.summary || "No summary available."
+    );
+
+    results.appendChild(summaryCard);
+
+
+    /* FINDINGS */
+
+    addHeading(results, "Visual Findings");
+
+    const findings = analysis.findings || [];
+
+    if (findings.length === 0) {
+
+        addParagraph(
+            results,
+            "No visual findings were returned."
+        );
+
+    }
+
+    for (const finding of findings) {
+
+        const card = document.createElement("div");
+
+        card.className = "finding-card";
+
+        const title = document.createElement("h4");
+
+        title.textContent =
+            finding.type || "Visual finding";
+
+        card.appendChild(title);
+
+        addParagraph(
+            card,
+            "Status: " + (finding.status || "Unclear")
+        );
+
+        addParagraph(
+            card,
+            "Severity: " + (finding.severity || "Unknown")
+        );
+
+        addParagraph(
+            card,
+            "Description: " +
+            (finding.description || "Not available.")
+        );
+
+        addParagraph(
+            card,
+            "Location: " + (finding.location || "Unknown")
+        );
+
+        addParagraph(
+            card,
+            "Confidence: " + (finding.confidence || "Unknown")
+        );
+
+        results.appendChild(card);
+    }
+
+
+    /* RECOMMENDATIONS */
+
+    addHeading(results, "Recommendations");
+
+    addList(results, analysis.recommendations);
+
+
+    /* LIMITATIONS */
+
+    addHeading(results, "Analysis Limitations");
+
+    addList(results, analysis.limitations);
+
+}
+
+
+/* FORM SUBMISSION */
+
+form.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    const file = fileInput.files[0];
+
+    if (!file) {
+
+        results.textContent =
+            "Please choose an image first.";
+
+        return;
+    }
+
+    const data = new FormData();
+
+    data.append("image", file);
+
+    button.disabled = true;
+
+    button.textContent = "Analyzing...";
+
+    results.textContent =
+        "ESTARA AI is inspecting your property image. Please wait...";
+
+    try {
+
+        const response = await fetch("/api/condition-ai", {
+
+            method: "POST",
+
+            body: data
+
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+
+            throw new Error(
+                result.error || "Image analysis failed."
+            );
+        }
+
+        results.replaceChildren();
+
+        /* Display image measurements */
+
+        displayImageQuality(result);
+
+        /* Display Groq Vision findings */
+
+        displayDamageAnalysis(result.damage_analysis);
+
+        /* Disclaimer */
+
+        const disclaimer = document.createElement("p");
+
+        disclaimer.className = "notice";
+
+        disclaimer.textContent =
+            result.disclaimer ||
+            "This is a preliminary AI visual assessment, not a professional inspection.";
+
+        results.appendChild(disclaimer);
+
+    }
+
+    catch (error) {
+
+        results.replaceChildren();
+
+        const message = document.createElement("p");
+
+        message.className = "error";
+
+        message.textContent = error.message;
+
+        results.appendChild(message);
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+        button.textContent = "Analyze Image";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

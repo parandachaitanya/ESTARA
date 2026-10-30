@@ -1,0 +1,81 @@
+
+[
+  {
+    "id": "EST-001",
+    "name": "Premium 3 BHK Residence",
+    "location": "Gachibowli, Hyderabad",
+    "price": 9400000,
+    "priceLabel": "₹94 Lakh",
+    "type": "Apartment",
+    "bhk": 3,
+    "area": 1650,
+    "description": "A spacious apartment near business districts with a bright living area, balcony, and convenient access to everyday amenities.",
+    "features": ["Balcony", "Parking", "Gym", "Security"],
+    "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85"
+  },
+  {
+    "id": "EST-002",
+    "name": "Modern City Apartment",
+    "location": "Kondapur, Hyderabad",
+    "price": 8800000,
+    "priceLabel": "₹88 Lakh",
+    "type": "Apartment",
+    "bhk": 3,
+    "area": 1480,
+    "description": "A modern family apartment with a practical layout and access to shops, schools, and main roads.",
+    "features": ["Parking", "Security", "Lift"],
+    "image": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85"
+  },
+  {
+    "id": "EST-003",
+    "name": "Smart Family Home",
+    "location": "Hitech City, Hyderabad",
+    "price": 8200000,
+    "priceLabel": "₹82 Lakh",
+    "type": "Apartment",
+    "bhk": 2,
+    "area": 1250,
+    "description": "A compact city home suited to small families and professionals who want a convenient commute.",
+    "features": ["Security", "Lift", "Power Backup"],
+    "image": "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=85"
+  },
+  {
+    "id": "EST-004",
+    "name": "Luxury Garden Villa",
+    "location": "Gachibowli, Hyderabad",
+    "price": 14500000,
+    "priceLabel": "₹1.45 Crore",
+    "type": "Villa",
+    "bhk": 3,
+    "area": 2450,
+    "description": "A larger villa-style home with outdoor space, multiple bedrooms, and a quieter residential setting.",
+    "features": ["Garden", "Parking", "Security", "Terrace"],
+    "image": "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1000&q=85"
+  },
+  {
+    "id": "EST-005",
+    "name": "Starter Home",
+    "location": "Miyapur, Hyderabad",
+    "price": 5400000,
+    "priceLabel": "₹54 Lakh",
+    "type": "Apartment",
+    "bhk": 2,
+    "area": 1080,
+    "description": "A budget-conscious apartment with an efficient floor plan for first-time home buyers.",
+    "features": ["Parking", "Lift"],
+    "image": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85"
+  },
+  {
+    "id": "EST-006",
+    "name": "Independent Family House",
+    "location": "Manikonda, Hyderabad",
+    "price": 11200000,
+    "priceLabel": "₹1.12 Crore",
+    "type": "Independent House",
+    "bhk": 4,
+    "area": 2200,
+    "description": "An independent family house with generous indoor space and nearby neighborhood services.",
+    "features": ["Parking", "Terrace", "Storage"],
+    "image": "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1000&q=85"
+  }
+]

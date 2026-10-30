@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTARA | ML Price Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5f9;
+            color: #202938;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 16px;
+        }
+
+        main {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 0 16px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 5px 22px #0000000d;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #172554;
+        }
+
+        .description {
+            color: #586174;
+            line-height: 1.6;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #result {
+            display: none;
+            margin-top: 22px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #eff6ff;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        #result h2 {
+            margin-top: 0;
+        }
+
+        .error {
+            color: #b91c1c;
+            background: #fef2f2 !important;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h2>ESTARA</h2>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/future-insights">Future Insights</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <h1>AI Property Price Prediction</h1>
+
+            <p class="description">
+                Enter your property details to get an estimated listing price
+                using ESTARA's machine learning model.
+            </p>
+
+            <form id="predictionForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="area">Area (square feet)</label>
+                        <input id="area" name="area_insqft"
+                               type="number" min="1" step="any"
+                               placeholder="Example: 1200" required>
+                    </div>
+
+                    <div>
+                        <label for="bhk">Number of bedrooms (BHK)</label>
+                        <input id="bhk" name="bhk"
+                               type="number" min="1" max="20" step="1"
+                               placeholder="Example: 2" required>
+                    </div>
+
+                    <div>
+                        <label for="location">Location</label>
+                        <input id="location" name="location"
+                               type="text" placeholder="Example: Hyderabad"
+                               required>
+                    </div>
+
+                    <div>
+                        <label for="type">Property type</label>
+                        <select id="type" name="property_type" required>
+                            <option value="">Select property type</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Independent House">Independent House</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="status">Building status</label>
+                        <select id="status" name="building_status" required>
+                            <option value="">Select building status</option>
+                            <option value="Ready to Move">Ready to Move</option>
+                            <option value="Under Construction">Under Construction</option>
+                            <option value="New">New</option>
+                            <option value="Resale">Resale</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="predictButton" type="submit">
+                    Predict Property Price
+                </button>
+            </form>
+
+            <div id="result" role="status" aria-live="polite"></div>
+
+            <p class="note">
+                Note: This is an experimental ML estimate based on available
+                listing data. It is not a guaranteed market price. Results
+                depend on the data and categories used to train the model.
+            </p>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById("predictionForm");
+        const resultBox = document.getElementById("result");
+        const button = document.getElementById("predictButton");
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            resultBox.style.display = "block";
+            resultBox.className = "";
+            resultBox.textContent = "Calculating estimated price...";
+            button.disabled = true;
+
+            const formData = new FormData(form);
+
+            const data = {
+                area_insqft: Number(formData.get("area_insqft")),
+                bhk: Number(formData.get("bhk")),
+                location: formData.get("location").trim(),
+                property_type: formData.get("property_type"),
+                building_status: formData.get("building_status")
+            };
+
+            try {
+                const response = await fetch("/api/predict-price", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const answer = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        answer.error || answer.message || "Prediction failed."
+                    );
+                }
+
+                const price = Number(answer.estimated_price_lakhs);
+
+                if (!Number.isFinite(price)) {
+                    throw new Error("The server returned an invalid price.");
+                }
+
+                resultBox.replaceChildren();
+
+                const heading = document.createElement("h2");
+                heading.textContent = "Estimated Listing Price";
+
+                const amount = document.createElement("p");
+                amount.style.fontSize = "28px";
+                amount.style.fontWeight = "bold";
+                amount.textContent = "₹" + price.toLocaleString("en-IN")
+                    + " lakh";
+
+                const note = document.createElement("p");
+                note.textContent = answer.message ||
+                    "This is an experimental machine learning estimate.";
+
+                resultBox.append(heading, amount, note);
+            } catch (error) {
+                resultBox.className = "error";
+                resultBox.textContent =
+                    "Could not get prediction: " + error.message +
+                    " Check that Flask is running and the prediction API is available.";
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

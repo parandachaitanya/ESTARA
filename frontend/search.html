@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Properties | ESTARA</title>
+    <link rel="stylesheet" href="/static/assets/css/styles.css">
+</head>
+<body>
+
+<header class="container">
+    <nav class="navbar">
+        <a class="logo" href="/">ESTARA</a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/results">Sample Listings</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container">
+    <section class="section">
+        <div class="section-heading">
+            <p class="eyebrow">Property Search</p>
+            <h1>Find your next place.</h1>
+            <p>Choose your preferences to explore matching demo listings.</p>
+        </div>
+
+        <div class="panel">
+            <form id="searchForm">
+                <div class="form-grid">
+
+                    <div>
+                        <label for="mode">I want to</label>
+                        <select id="mode">
+                            <option value="buy">Buy</option>
+                            <option value="rent">Rent</option>
+                            <option value="lease">Lease</option>
+                            <option value="sell">Sell</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="location">Location</label>
+                        <input id="location"
+                               placeholder="e.g. Gachibowli">
+                    </div>
+
+                    <div>
+                        <label for="propertyType">Property type</label>
+                        <select id="propertyType">
+                            <option value="">Any type</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Independent House">Independent House</option>
+                            <option value="Plot">Plot</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="bhk">Bedrooms</label>
+                        <select id="bhk">
+                            <option value="">Any</option>
+                            <option value="1">1 BHK</option>
+                            <option value="2">2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4+ BHK</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="minBudget">Minimum budget (₹)</label>
+                        <input id="minBudget"
+                               type="number"
+                               min="0"
+                               placeholder="e.g. 5000000">
+                    </div>
+
+                    <div>
+                        <label for="maxBudget">Maximum budget (₹)</label>
+                        <input id="maxBudget"
+                               type="number"
+                               min="1"
+                               placeholder="e.g. 10000000">
+                    </div>
+
+                </div>
+
+                <button class="button" type="submit">
+                    Search Properties →
+                </button>
+
+                <p id="formMessage" class="message" role="status"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        ESTARA · Property discovery prototype
+    </div>
+</footer>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+["mode", "location", "propertyType", "bhk",
+ "minBudget", "maxBudget"].forEach(key => {
+    const field = document.getElementById(key);
+    const value = params.get(key);
+
+    if (value && field) {
+        field.value = value;
+    }
+});
+
+document.getElementById("searchForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const minField = document.getElementById("minBudget").value;
+    const maxField = document.getElementById("maxBudget").value;
+
+    const min = minField === "" ? null : Number(minField);
+    const max = maxField === "" ? null : Number(maxField);
+    const message = document.getElementById("formMessage");
+
+    if ((min !== null && (!Number.isFinite(min) || min < 0)) ||
+        (max !== null && (!Number.isFinite(max) || max <= 0))) {
+        message.textContent = "Please enter a valid budget.";
+        return;
+    }
+
+    if (min !== null && max !== null && min > max) {
+        message.textContent =
+            "Minimum budget must not exceed maximum budget.";
+        return;
+    }
+
+    const output = new URLSearchParams();
+
+    ["mode", "location", "propertyType", "bhk",
+     "minBudget", "maxBudget"].forEach(key => {
+        const value = document.getElementById(key).value.trim();
+
+        if (value !== "") {
+            output.set(key, value);
+        }
+    });
+
+    window.location.href = "/results?" + output.toString();
+});
+</script>
+
+</body>
+</html>
+```
